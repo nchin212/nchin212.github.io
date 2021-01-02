@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Credit Card Fraud Detection | Nicholas Chin Wei Lun</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.75.1" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="https://nchin212.github.io/dist/css/app.4fc0b62e4b82c997bb0041217cd6b979.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Credit Card Fraud Detection" />
+<meta property="og:description" content="Classifying transactions as safe or fraudulent" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://nchin212.github.io/post/credit_fraud/" />
+<meta property="article:published_time" content="2020-12-20T11:00:59-04:00" />
+<meta property="article:modified_time" content="2020-12-20T11:00:59-04:00" />
+<meta itemprop="name" content="Credit Card Fraud Detection">
+<meta itemprop="description" content="Classifying transactions as safe or fraudulent">
+<meta itemprop="datePublished" content="2020-12-20T11:00:59-04:00" />
+<meta itemprop="dateModified" content="2020-12-20T11:00:59-04:00" />
+<meta itemprop="wordCount" content="2125">
+
+
+
+<meta itemprop="keywords" content="Classification,LogisticRegression,Oversampling," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Credit Card Fraud Detection"/>
+<meta name="twitter:description" content="Classifying transactions as safe or fraudulent"/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  
+  <header class="cover bg-top" style="background-image: url('https://nchin212.github.io/images/credit_fraud/credit.jpg');">
+    <div class="pb3-m pb6-l bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://nchin212.github.io/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Nicholas Chin Wei Lun
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://nchin212.github.io/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://nchin212.github.io/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://nchin212.github.io/post/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+
+
+
+
+
+
+
+
+<a href="https://github.com/nchin212" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">Credit Card Fraud Detection</h1>
+          
+            <h2 class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Classifying transactions as safe or fraudulent
+            </h2>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        PROJECTS
+      </aside>
+      
+
+
+
+
+  <div id="sharing" class="mt3">
+
+    
+    <a href="https://www.facebook.com/sharer.php?u=https://nchin212.github.io/post/credit_fraud/" class="facebook no-underline" aria-label="share on Facebook">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765,50.32h6.744V33.998h4.499l0.596-5.624h-5.095  l0.007-2.816c0-1.466,0.14-2.253,2.244-2.253h2.812V17.68h-4.5c-5.405,0-7.307,2.729-7.307,7.317v3.377h-3.369v5.625h3.369V50.32z   M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+
+    </a>
+
+    
+    
+    <a href="https://twitter.com/share?url=https://nchin212.github.io/post/credit_fraud/&amp;text=Credit%20Card%20Fraud%20Detection" class="twitter no-underline" aria-label="share on Twitter">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+    </a>
+
+    
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://nchin212.github.io/post/credit_fraud/&amp;title=Credit%20Card%20Fraud%20Detection" class="linkedin no-underline" aria-label="share on LinkedIn">
+      <svg  height="32px"  style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+
+    </a>
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Credit Card Fraud Detection</h1>
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-12-20T11:00:59-04:00">December 20, 2020</time>
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Credit card companies handle numerous credit card transactions each day and there could be some cases of fraudulent transactions, where customers are charged for items they did not purchase. As such, it is important for companies to detect these fraudulent transactions to improve customer security and build up customer confidence in the company. In this project, we will explore some methods to resolve data imbalance and use logistic regression to classify the transactions as safe or fraudulent.</p>
+<h2 id="data">Data</h2>
+<p>The dataset is taken from Kaggle and can be obtained <a href="https://www.kaggle.com/mlg-ulb/creditcardfraud">here</a>.</p>
+<p>The dataset contains transactions made by credit cards in September 2013 by European cardholders. Features V1, V2, … V28 are the principal components obtained with PCA, the only features which have not been transformed with PCA are &lsquo;Time&rsquo; and &lsquo;Amount&rsquo;. Feature &lsquo;Time&rsquo; contains the seconds elapsed between each transaction and the first transaction in the dataset. The feature &lsquo;Amount&rsquo; is the transaction Amount, this feature can be used for example-dependant cost-sensitive learning. The feature &lsquo;Class&rsquo; is the response variable and it takes value 1 in case of fraud and 0 otherwise.</p>
+<h2 id="loading-in-the-data">Loading in the Data</h2>
+<p>Load in the libraries.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+
+<span style="color:#f92672">%</span>matplotlib inline
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> sklearn.preprocessing <span style="color:#f92672">import</span> StandardScaler
+<span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split
+<span style="color:#f92672">from</span> sklearn.linear_model <span style="color:#f92672">import</span> LogisticRegression
+<span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> confusion_matrix, classification_report, roc_curve, auc, accuracy_score, precision_score, recall_score, f1_score
+
+<span style="color:#f92672">from</span> imblearn.over_sampling <span style="color:#f92672">import</span> RandomOverSampler
+<span style="color:#f92672">from</span> imblearn.over_sampling <span style="color:#f92672">import</span> SMOTE
+</code></pre></div><p>Load in the csv file and check its first few rows.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;creditcard.csv&#34;</span>)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit<span style="color:#f92672">.</span>head()
+</code></pre></div><pre><code>        Time	V1	        V2	        V3	        V4	        V5	        V6	        V7	        V8	        V9	        ...	V21	        V22	        V23	        V24	        V25	        V26	        V27	        V28	        Amount Class
+0	0.0	-1.359807	-0.072781	2.536347	1.378155	-0.338321	0.462388	0.239599	0.098698	0.363787	...	-0.018307	0.277838	-0.110474	0.066928	0.128539	-0.189115	0.133558	-0.021053	149.62	0
+1	0.0	1.191857	0.266151	0.166480	0.448154	0.060018	-0.082361	-0.078803	0.085102	-0.255425	...	-0.225775	-0.638672	0.101288	-0.339846	0.167170	0.125895	-0.008983	0.014724	2.69	0
+2	1.0	-1.358354	-1.340163	1.773209	0.379780	-0.503198	1.800499	0.791461	0.247676	-1.514654	...	0.247998	0.771679	0.909412	-0.689281	-0.327642	-0.139097	-0.055353	-0.059752	378.66	0
+3	1.0	-0.966272	-0.185226	1.792993	-0.863291	-0.010309	1.247203	0.237609	0.377436	-1.387024	...	-0.108300	0.005274	-0.190321	-1.175575	0.647376	-0.221929	0.062723	0.061458	123.50	0
+4	2.0	-1.158233	0.877737	1.548718	0.403034	-0.407193	0.095921	0.592941	-0.270533	0.817739	...	-0.009431	0.798278	-0.137458	0.141267	-0.206010	0.502292	0.219422	0.215153	69.99	0
+5 rows × 31 columns
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>(284807, 31)
+</code></pre>
+<h2 id="data-preparation">Data Preparation</h2>
+<p>Separate the output variable from the predictor variables.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">output_var <span style="color:#f92672">=</span> credit[<span style="color:#e6db74">&#39;Class&#39;</span>]
+credit<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Class&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+</code></pre></div><p>Normalize the &lsquo;Amount&rsquo; column and remove the &lsquo;Time&rsquo; column.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit[<span style="color:#e6db74">&#39;norm_amount&#39;</span>] <span style="color:#f92672">=</span> StandardScaler()<span style="color:#f92672">.</span>fit_transform(credit[<span style="color:#e6db74">&#39;Amount&#39;</span>]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
+credit<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Time&#39;</span>,<span style="color:#e6db74">&#39;Amount&#39;</span>],axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+credit<span style="color:#f92672">.</span>head()
+</code></pre></div><pre><code>        V1	        V2	        V3	        V4	        V5	        V6	        V7	        V8	        V9	        V10	        ...	V20	        V21	        V22	        V23	        V24	        V25	        V26	        V27	        V28	        norm_amount
+0	-1.359807	-0.072781	2.536347	1.378155	-0.338321	0.462388	0.239599	0.098698	0.363787	0.090794	...	0.251412	-0.018307	0.277838	-0.110474	0.066928	0.128539	-0.189115	0.133558	-0.021053	0.244964
+1	1.191857	0.266151	0.166480	0.448154	0.060018	-0.082361	-0.078803	0.085102	-0.255425	-0.166974	...	-0.069083	-0.225775	-0.638672	0.101288	-0.339846	0.167170	0.125895	-0.008983	0.014724	-0.342475
+2	-1.358354	-1.340163	1.773209	0.379780	-0.503198	1.800499	0.791461	0.247676	-1.514654	0.207643	...	0.524980	0.247998	0.771679	0.909412	-0.689281	-0.327642	-0.139097	-0.055353	-0.059752	1.160686
+3	-0.966272	-0.185226	1.792993	-0.863291	-0.010309	1.247203	0.237609	0.377436	-1.387024	-0.054952	...	-0.208038	-0.108300	0.005274	-0.190321	-1.175575	0.647376	-0.221929	0.062723	0.061458	0.140534
+4	-1.158233	0.877737	1.548718	0.403034	-0.407193	0.095921	0.592941	-0.270533	0.817739	0.753074	...	0.408542	-0.009431	0.798278	-0.137458	0.141267	-0.206010	0.502292	0.219422	0.215153	-0.073403
+5 rows × 29 columns
+</code></pre>
+<h2 id="data-imbalance">Data Imbalance</h2>
+<p>We count the number of each class as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">class_count <span style="color:#f92672">=</span> output_var<span style="color:#f92672">.</span>value_counts()
+class_count
+</code></pre></div><pre><code>0    284315
+1       492
+Name: Class, dtype: int64
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">class_count<span style="color:#f92672">.</span>plot(kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bar&#39;</span>)
+</code></pre></div><pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fa8f033ea30&gt;
+</code></pre>
+<p><img src="https://nchin212.github.io/images/credit_fraud/imbalance_bp.png" alt="png"></p>
+<p>From the values and plot, there appears to be severe data imbalance. Very few transactions are fraudulent while most of the transactions are safe. This needs to be resolved as predictive models developed using conventional machine learning algorithms could be biased and inaccurate. Such models would have a bias towards classes which have a high number of instances, such as in this case, safe transactions. These models would tend to predict the transactions as safe and treat the fraudulent transactions as noise. Thus, there would be a high probability of misclassification of fraudulent transactions as safe, which is definitely not ideal.</p>
+<p>One of the ways to resolve data imbalance is to resample the dataset. This can be done by undersampling or oversampling. In this case, we will use oversampling as undersampling would result in too little data.</p>
+<h2 id="oversampling">Oversampling</h2>
+<p>Two different oversampling techniques will be tested. They are:</p>
+<ul>
+<li>RandomOverSampler</li>
+<li>SMOTE (Synthetic Minority Oversampling Technique)</li>
+</ul>
+<p>Split the data into training and test sets. Note that we only perform oversampling after data splitting and on the training data so that no information will from the test data will be used in model training.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">x_train, x_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(credit, output_var, test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
+</code></pre></div><h3 id="randomoversampler">RandomOverSampler</h3>
+<p>RandomOverSampler involves oversampling the minority class by picking samples at random with replacement. We are going to check the number of rows before and after sampling.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Check number of rows before oversampling</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Before OverSampling, counts of label &#39;1&#39;: {}&#34;</span><span style="color:#f92672">.</span>format(sum(y_train<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>)))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;Before OverSampling, counts of label &#39;0&#39;: {} </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(sum(y_train<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>)))
+</code></pre></div><pre><code>Before OverSampling, counts of label '1': 356
+Before OverSampling, counts of label '0': 199008
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Apply RandomOverSampler</span>
+over_sample <span style="color:#f92672">=</span> RandomOverSampler(random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
+x_train_ros, y_train_ros <span style="color:#f92672">=</span> over_sample<span style="color:#f92672">.</span>fit_resample(x_train, y_train<span style="color:#f92672">.</span>ravel())
+<span style="color:#75715e"># Check number of rows after oversampling</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;After OverSampling, counts of label &#39;1&#39;: {}&#34;</span><span style="color:#f92672">.</span>format(sum(y_train_ros<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>)))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;After OverSampling, counts of label &#39;0&#39;: {} </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(sum(y_train_ros<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>)))
+</code></pre></div><pre><code>After OverSampling, counts of label '1': 199008
+After OverSampling, counts of label '0': 199008
+</code></pre>
+<h3 id="smote-synthetic-minority-oversampling-technique">SMOTE (Synthetic Minority Oversampling Technique)</h3>
+<p>SMOTE first selects a minority class instance &lsquo;a&rsquo; at random and finds its k nearest minority class neighbors. The synthetic instance is then created by choosing one of the k nearest neighbors &lsquo;b&rsquo; at random and connecting &lsquo;a&rsquo; and &lsquo;b&rsquo; to form a line segment. The synthetic instances are generated as a convex combination of the two chosen instances &lsquo;a&rsquo; and &lsquo;b&rsquo;.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Apply SMOTE</span>
+over_sample <span style="color:#f92672">=</span> SMOTE(random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
+x_train_smote, y_train_smote <span style="color:#f92672">=</span> over_sample<span style="color:#f92672">.</span>fit_resample(x_train, y_train<span style="color:#f92672">.</span>ravel())
+<span style="color:#75715e"># Check number of rows after oversampling</span>
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;After OverSampling, counts of label &#39;1&#39;: {}&#34;</span><span style="color:#f92672">.</span>format(sum(y_train_smote<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>)))
+<span style="color:#66d9ef">print</span>(<span style="color:#e6db74">&#34;After OverSampling, counts of label &#39;0&#39;: {} </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>format(sum(y_train_smote<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>)))
+</code></pre></div><pre><code>After OverSampling, counts of label '1': 199008
+After OverSampling, counts of label '0': 199008
+</code></pre>
+<h2 id="model-building">Model Building</h2>
+<p>Logistic regression will be used to model the data. Logistic Regression is a classification algorithm that is used to predict the probability of a categorical dependent variable. In logistic regression, the dependent variable is a binary variable that contains data coded as 1 or 0, or in this case, fraudulent or safe.</p>
+<p>The model will first be run on the imbalanced data, followed by  the data after oversampling (RandomOverSampler and SMOTE). The models on the 3 different datasets will then be compared.</p>
+<h3 id="1-logistic-regression-on-imbalanced-dataset">1) Logistic Regression on imbalanced dataset</h3>
+<p>Fit the training data into logistic regression and use the model to predict on the test data.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">lg <span style="color:#f92672">=</span> LogisticRegression()
+lg<span style="color:#f92672">.</span>fit(x_train, y_train)
+
+y_pred <span style="color:#f92672">=</span> lg<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><h3 id="evaluation">Evaluation</h3>
+<p>Plot the confusion matrix. A confusion matrix is a table that is often used to describe the performance of a classification model. It shows the number of true positives, true negatives, false positives and false negatives.</p>
+<p><strong>True Positives (TP)</strong> - Actual class is 1 and predicted class is 1 (safe transactions accurately classified as safe)</p>
+<p><strong>True Negatives (TN)</strong> - Actual class is 0 and predicted class is 0 (fraudulent transactions accurately classified as fraudulent)</p>
+<p><strong>False Positives (FP)</strong> - Actual class is 0 but predicted class is 1 (safe transactions wrongly classified as fraudulent)</p>
+<p><strong>False Negatives (FN)</strong> - Actual class is 1 but predicted class is 0 (fraudulent transactions wrongly classified as safe)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred)
+
+<span style="color:#75715e"># Create graphics for confusion matrix</span>
+labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Safe&#39;</span>,<span style="color:#e6db74">&#39;Fraudulent&#39;</span>]
+ax<span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplot()
+sns<span style="color:#f92672">.</span>heatmap(cm, annot<span style="color:#f92672">=</span>True, ax <span style="color:#f92672">=</span> ax, fmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;d&#34;</span>);
+
+<span style="color:#75715e"># Labels, title and ticks</span>
+ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Predicted labels&#39;</span>);ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;True labels&#39;</span>);
+ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
+ax<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_ticklabels(labels); ax<span style="color:#f92672">.</span>yaxis<span style="color:#f92672">.</span>set_ticklabels(labels)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/confusion_matrix.png" alt="png"></p>
+<p>There appears to be a large number of transactions classified correctly as safe or fraudulent. However, there are 51 false negatives, i.e. fraudulent transactions that were predicted as safe, which the model needs to improve on.</p>
+<p>Since this is an imbalanced dataset, we print out the classification report, which shows the accuracy, precision, recall, f1 score and support of the model.</p>
+<p><strong>Accuracy</strong> - Ratio of correctly predicted observations to the total observations, i.e. TP+TN/TP+FP+FN+TN</p>
+<p><strong>Precision</strong> - Ratio of correctly predicted positive observations to the total predicted positive observations, i.e. TP/TP+FP</p>
+<p><strong>Recall</strong> - Ratio of correctly predicted positive observations to all the observations in positive class, i.e. TP/TP+FN</p>
+<p><strong>F1 score</strong> - Weighted average of precision and recall, usually more useful than accuracy, especially if you have an uneven class distribution, i.e 2*(Recall * Precision) / (Recall + Precision)</p>
+<p><strong>Support</strong> - Number of actual occurrences of the class in the dataset</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">accuracy <span style="color:#f92672">=</span> accuracy_score(y_test, y_pred)
+precision <span style="color:#f92672">=</span> precision_score(y_test, y_pred)
+recall <span style="color:#f92672">=</span> recall_score(y_test, y_pred)
+f1 <span style="color:#f92672">=</span> f1_score(y_test, y_pred)
+
+<span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99940   0.99986   0.99963     85307
+           1    0.87629   0.62500   0.72961       136
+
+    accuracy                        0.99926     85443
+   macro avg    0.93785   0.81243   0.86462     85443
+weighted avg    0.99921   0.99926   0.99920     85443
+</code></pre>
+<p>The model has a precision of 0.88, recall of 0.63 and f1 score of 0.73, which shows that the model does relatively well.</p>
+<p>Now, we plot a Receiver Operating Characteristic (ROC) curve. It plots the true positive rate (TPR) versus the false positive rate (FPR) as a function of the model’s threshold for classifying a positive. We then proceed to compute the Area under the curve (AUC), which is a metric to calculate the overall performance of a classification model based on area under the ROC curve.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Get false positive rate and true positive rate</span>
+fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred)
+roc_auc <span style="color:#f92672">=</span> auc(fpr, tpr)
+
+<span style="color:#75715e"># Plot ROC curve</span>
+plt<span style="color:#f92672">.</span>figure()
+plt<span style="color:#f92672">.</span>plot(fpr, tpr, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;darkorange&#39;</span>,
+         lw<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ROC curve (area = </span><span style="color:#e6db74">%0.2f</span><span style="color:#e6db74">)&#39;</span> <span style="color:#f92672">%</span> roc_auc)
+plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;navy&#39;</span>, lw<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;--&#39;</span>)
+plt<span style="color:#f92672">.</span>xlim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>])
+plt<span style="color:#f92672">.</span>ylim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.05</span>])
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;False Positive Rate&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;True Positive Rate&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic curve&#39;</span>)
+plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc.png" alt="png"></p>
+<h3 id="2-logistic-regression-on-oversampled-dataset-randomoversampler">2) Logistic Regression on oversampled dataset (RandomOverSampler)</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">lg_ros <span style="color:#f92672">=</span> LogisticRegression()
+lg_ros<span style="color:#f92672">.</span>fit(x_train_ros, y_train_ros)
+
+y_pred <span style="color:#f92672">=</span> lg_ros<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><h3 id="evaluation-1">Evaluation</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred)
+
+<span style="color:#75715e"># Create graphics for confusion matrix</span>
+labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Safe&#39;</span>,<span style="color:#e6db74">&#39;Fraudulent&#39;</span>]
+ax<span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplot()
+sns<span style="color:#f92672">.</span>heatmap(cm, annot<span style="color:#f92672">=</span>True, ax <span style="color:#f92672">=</span> ax, fmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;d&#34;</span>);
+
+<span style="color:#75715e"># Labels, title and ticks</span>
+ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Predicted labels&#39;</span>);ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;True labels&#39;</span>);
+ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
+ax<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_ticklabels(labels); ax<span style="color:#f92672">.</span>yaxis<span style="color:#f92672">.</span>set_ticklabels(labels)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/confusion_matrix_ros.png" alt="png"></p>
+<p>There appears to be 10 false negatives, which is much lower than the unbalanced dataset. However, there are significantly more false positives.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">accuracy_ros <span style="color:#f92672">=</span> accuracy_score(y_test, y_pred)
+precision_ros <span style="color:#f92672">=</span> precision_score(y_test, y_pred)
+recall_ros <span style="color:#f92672">=</span> recall_score(y_test, y_pred)
+f1_ros <span style="color:#f92672">=</span> f1_score(y_test, y_pred)
+
+<span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99988   0.97414   0.98684     85307
+           1    0.05403   0.92647   0.10211       136
+
+    accuracy                        0.97406     85443
+   macro avg    0.52696   0.95031   0.54447     85443
+weighted avg    0.99837   0.97406   0.98543     85443
+</code></pre>
+<p>As expected, it has a low precision of 0.05 but a high recall of 0.93.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Get false positive rate and true positive rate</span>
+fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred)
+roc_auc_ros <span style="color:#f92672">=</span> auc(fpr, tpr)
+
+<span style="color:#75715e"># Plot ROC curve</span>
+plt<span style="color:#f92672">.</span>figure()
+plt<span style="color:#f92672">.</span>plot(fpr, tpr, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;darkorange&#39;</span>,
+         lw<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ROC curve (area = </span><span style="color:#e6db74">%0.2f</span><span style="color:#e6db74">)&#39;</span> <span style="color:#f92672">%</span> roc_auc)
+plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;navy&#39;</span>, lw<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;--&#39;</span>)
+plt<span style="color:#f92672">.</span>xlim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>])
+plt<span style="color:#f92672">.</span>ylim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.05</span>])
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;False Positive Rate&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;True Positive Rate&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic curve&#39;</span>)
+plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc_ros.png" alt="png"></p>
+<p>It has an AUC score of 0.95, which is higher than that of the imbalanced dataset.</p>
+<h3 id="3-logistic-regression-on-oversampled-dataset-smote">3) Logistic Regression on oversampled dataset (SMOTE)</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">lg_smote <span style="color:#f92672">=</span> LogisticRegression()
+lg_smote<span style="color:#f92672">.</span>fit(x_train_smote, y_train_smote)
+
+y_pred <span style="color:#f92672">=</span> lg_smote<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><h3 id="evaluation-2">Evaluation</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred)
+
+<span style="color:#75715e"># Create graphics for confusion matrix</span>
+labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Safe&#39;</span>,<span style="color:#e6db74">&#39;Fraudulent&#39;</span>]
+ax<span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplot()
+sns<span style="color:#f92672">.</span>heatmap(cm, annot<span style="color:#f92672">=</span>True, ax <span style="color:#f92672">=</span> ax, fmt<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;d&#34;</span>);
+
+<span style="color:#75715e"># Labels, title and ticks</span>
+ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#39;Predicted labels&#39;</span>);ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;True labels&#39;</span>);
+ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
+ax<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_ticklabels(labels); ax<span style="color:#f92672">.</span>yaxis<span style="color:#f92672">.</span>set_ticklabels(labels)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/confusion_matrix_smote.png" alt="png"></p>
+<p>It has similar false negatives to the oversampled data using RandomOverSampler but higher false positives.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">accuracy_smote <span style="color:#f92672">=</span> accuracy_score(y_test, y_pred)
+precision_smote <span style="color:#f92672">=</span> precision_score(y_test, y_pred)
+recall_smote <span style="color:#f92672">=</span> recall_score(y_test, y_pred)
+f1_smote <span style="color:#f92672">=</span> f1_score(y_test, y_pred)
+
+<span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99988   0.97303   0.98627     85307
+           1    0.05192   0.92647   0.09832       136
+
+    accuracy                        0.97295     85443
+   macro avg    0.52590   0.94975   0.54230     85443
+weighted avg    0.99837   0.97295   0.98486     85443
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Get false positive rate and true positive rate</span>
+fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred)
+roc_auc_smote <span style="color:#f92672">=</span> auc(fpr, tpr)
+
+<span style="color:#75715e"># Plot ROC curve</span>
+plt<span style="color:#f92672">.</span>figure()
+plt<span style="color:#f92672">.</span>plot(fpr, tpr, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;darkorange&#39;</span>,
+         lw<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, label<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ROC curve (area = </span><span style="color:#e6db74">%0.2f</span><span style="color:#e6db74">)&#39;</span> <span style="color:#f92672">%</span> roc_auc)
+plt<span style="color:#f92672">.</span>plot([<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], [<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;navy&#39;</span>, lw<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>, linestyle<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;--&#39;</span>)
+plt<span style="color:#f92672">.</span>xlim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.0</span>])
+plt<span style="color:#f92672">.</span>ylim([<span style="color:#ae81ff">0.0</span>, <span style="color:#ae81ff">1.05</span>])
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;False Positive Rate&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;True Positive Rate&#39;</span>)
+plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic curve&#39;</span>)
+plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc_smote.png" alt="png"></p>
+<p>It has similar AUC score to the oversampled data using RandomOverSampler.</p>
+<h2 id="results">Results</h2>
+<p>For a better comparison, we create the following dataframe.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;Accuracy&#39;</span> : [accuracy,accuracy_ros,accuracy_smote],
+        <span style="color:#e6db74">&#39;Precision&#39;</span> : [precision, precision_ros, precision_smote],
+        <span style="color:#e6db74">&#39;Recall&#39;</span> : [recall, recall_ros, recall_smote],
+        <span style="color:#e6db74">&#39;F1&#39;</span> : [f1,f1_ros,f1_smote],
+        <span style="color:#e6db74">&#39;AUC&#39;</span> : [roc_auc,roc_auc_ros,roc_auc_smote]}
+pd<span style="color:#f92672">.</span>DataFrame(data, index <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Imbalanced&#39;</span>, <span style="color:#e6db74">&#39;RandomOverSampler&#39;</span>, <span style="color:#e6db74">&#39;SMOTE&#39;</span>])
+</code></pre></div><pre><code>                        Accuracy	Precision	Recall	        F1	        AUC
+Imbalanced	        0.999263	0.876289	0.625000	0.729614	0.812430
+RandomOverSampler	0.974065	0.054031	0.926471	0.102107	0.950306
+SMOTE	                0.972953	0.051916	0.926471	0.098322	0.949749
+</code></pre>
+<p>It would appear that the imbalanced dataset performs better overall based on the F1 score. However, if the cost of false positives is not too high, the company may consider using the model fitted with RandomOverSampler, since it predicts less false negatives so less fraudulent transactions will be passed off as safe.</p>
+<p><a href="https://github.com/nchin212/Credit_Card_Fraud_Detection">Link to Github repository</a></p>
+<ul class="pa0">
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/Classification" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Classification</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/LogisticRegression" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">LogisticRegression</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/Oversampling" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Oversampling</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://nchin212.github.io" >
+    &copy;  Nicholas Chin Wei Lun 2021 
+  </a>
+    <div>
+
+
+
+
+
+
+
+
+<a href="https://github.com/nchin212" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="https://nchin212.github.io/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

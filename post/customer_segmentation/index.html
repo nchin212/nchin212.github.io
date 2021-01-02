@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Customer Segmentation | Nicholas Chin Wei Lun</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="generator" content="Hugo 0.75.1" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+    
+      <link href="https://nchin212.github.io/dist/css/app.4fc0b62e4b82c997bb0041217cd6b979.css" rel="stylesheet">
+    
+
+    
+
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Customer Segmentation" />
+<meta property="og:description" content="Grouping customers based on RFM" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://nchin212.github.io/post/customer_segmentation/" />
+<meta property="article:published_time" content="2020-12-11T10:58:08-04:00" />
+<meta property="article:modified_time" content="2020-12-11T10:58:08-04:00" />
+<meta itemprop="name" content="Customer Segmentation">
+<meta itemprop="description" content="Grouping customers based on RFM">
+<meta itemprop="datePublished" content="2020-12-11T10:58:08-04:00" />
+<meta itemprop="dateModified" content="2020-12-11T10:58:08-04:00" />
+<meta itemprop="wordCount" content="1070">
+
+
+
+<meta itemprop="keywords" content="Clustering,K-meansClustering,RFM," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Customer Segmentation"/>
+<meta name="twitter:description" content="Grouping customers based on RFM"/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  
+  <header class="cover bg-top" style="background-image: url('https://nchin212.github.io/images/customer_segmentation/segment.jpg');">
+    <div class="pb3-m pb6-l bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="https://nchin212.github.io/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Nicholas Chin Wei Lun
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://nchin212.github.io/about/" title="About page">
+              About
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://nchin212.github.io/contact/" title="Contact page">
+              Contact
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="https://nchin212.github.io/post/" title="Projects page">
+              Projects
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+
+
+
+
+
+
+
+
+<a href="https://github.com/nchin212" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">Customer Segmentation</h1>
+          
+            <h2 class="fw1 f5 f3-l white-80 measure-wide-l center lh-copy mt3 mb4">
+              Grouping customers based on RFM
+            </h2>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        PROJECTS
+      </aside>
+      
+
+
+
+
+  <div id="sharing" class="mt3">
+
+    
+    <a href="https://www.facebook.com/sharer.php?u=https://nchin212.github.io/post/customer_segmentation/" class="facebook no-underline" aria-label="share on Facebook">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765,50.32h6.744V33.998h4.499l0.596-5.624h-5.095  l0.007-2.816c0-1.466,0.14-2.253,2.244-2.253h2.812V17.68h-4.5c-5.405,0-7.307,2.729-7.307,7.317v3.377h-3.369v5.625h3.369V50.32z   M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+
+    </a>
+
+    
+    
+    <a href="https://twitter.com/share?url=https://nchin212.github.io/post/customer_segmentation/&amp;text=Customer%20Segmentation" class="twitter no-underline" aria-label="share on Twitter">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+    </a>
+
+    
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://nchin212.github.io/post/customer_segmentation/&amp;title=Customer%20Segmentation" class="linkedin no-underline" aria-label="share on LinkedIn">
+      <svg  height="32px"  style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+
+    </a>
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Customer Segmentation</h1>
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2020-12-11T10:58:08-04:00">December 11, 2020</time>
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Customer segmentation is the process of dividing customers into groups based on common characteristics. This is essential as it allows companies to market to each group effectively and appropriately. By marketing to each customer group differently, companies will be able to maximise their profits. To perform customer segmentation, we will be performing recency, frequency and monetary (RFM) analysis, followed by k-means clustering.</p>
+<p><img src="https://nchin212.github.io/images/customer_segmentation/cust.png" alt="png"></p>
+<h2 id="data">Data</h2>
+<p>The data contains various items purchased by various customers across 38 countries. It consists of 541909 rows and 8 columns, which are &lsquo;InvoiceNo&rsquo;, &lsquo;StockCode&rsquo;, &lsquo;Description&rsquo;, &lsquo;Quantity&rsquo;, &lsquo;InvoiceDate&rsquo;, &lsquo;UnitPrice&rsquo;, &lsquo;CustomerID&rsquo; and &lsquo;Country&rsquo;.</p>
+<h2 id="data-cleaning">Data Cleaning</h2>
+<p>Import the required libraries.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
+<span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
+<span style="color:#f92672">import</span> seaborn <span style="color:#f92672">as</span> sns
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#f92672">as</span> plt
+<span style="color:#f92672">import</span> datetime <span style="color:#f92672">as</span> dt
+
+<span style="color:#f92672">from</span> sklearn.cluster <span style="color:#f92672">import</span> KMeans
+<span style="color:#f92672">from</span> mpl_toolkits.mplot3d <span style="color:#f92672">import</span> Axes3D
+
+<span style="color:#f92672">%</span>matplotlib inline
+</code></pre></div><p>Read in the input data, display its shape and observe its first few rows.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_excel(<span style="color:#e6db74">&#34;Online Retail.xlsx&#34;</span>)
+cus<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>(541909, 8)
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus<span style="color:#f92672">.</span>head()
+</code></pre></div><pre><code>     InvoiceNo StockCode	Description	             Quantity	InvoiceDate	    UnitPrice	CustomerID	Country
+0	536365  85123A	WHITE HANGING HEART T-LIGHT HOLDER      6	2010-12-01 08:26:00	2.55	17850.0	    United Kingdom
+1	536365	71053	WHITE METAL LANTERN	                6	2010-12-01 08:26:00	3.39	17850.0	    United Kingdom
+2	536365	84406B	CREAM CUPID HEARTS COAT HANGER	        8	2010-12-01 08:26:00	2.75	17850.0	    United Kingdom
+3	536365	84029G	KNITTED UNION FLAG HOT WATER BOTTLE	6	2010-12-01 08:26:00	3.39	17850.0	    United Kingdom
+4	536365	84029E	RED WOOLLY HOTTIE WHITE HEART.	        6	2010-12-01 08:26:00	3.39	17850.0	    United Kingdom
+</code></pre>
+<p>Check for missing values.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus<span style="color:#f92672">.</span>count()
+</code></pre></div><pre><code>InvoiceNo      541909
+StockCode      541909
+Description    540455
+Quantity       541909
+InvoiceDate    541909
+UnitPrice      541909
+CustomerID     406829
+Country        541909
+dtype: int64
+</code></pre>
+<p>For purpose of analysis, we will only be examining customer purchases from the United Kingdom for 1 year, from 11 December 2010 to 11 December 2011. We also have to remove the null values from &lsquo;CustomerID&rsquo; and &lsquo;Description&rsquo;, remove the orders which were cancelled (those with a &lsquo;C&rsquo; in &lsquo;InvoiceNo&rsquo;) and remove the negative values from &lsquo;Quantity&rsquo; and &lsquo;UnitPrice&rsquo;.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus_f <span style="color:#f92672">=</span> cus[
+    (cus[<span style="color:#e6db74">&#39;Country&#39;</span>]<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;United Kingdom&#39;</span>) <span style="color:#f92672">&amp;</span>
+    (cus[<span style="color:#e6db74">&#39;CustomerID&#39;</span>]<span style="color:#f92672">.</span>notnull()) <span style="color:#f92672">&amp;</span>
+    (cus[<span style="color:#e6db74">&#39;Description&#39;</span>]<span style="color:#f92672">.</span>notnull()) <span style="color:#f92672">&amp;</span>
+    (<span style="color:#f92672">~</span>cus[<span style="color:#e6db74">&#34;InvoiceNo&#34;</span>]<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#34;C&#34;</span>,na<span style="color:#f92672">=</span>False)) <span style="color:#f92672">&amp;</span>
+    (cus[<span style="color:#e6db74">&#39;Quantity&#39;</span>] <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">&amp;</span>
+    (cus[<span style="color:#e6db74">&#39;UnitPrice&#39;</span>] <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">&amp;</span>
+    (cus[<span style="color:#e6db74">&#39;InvoiceDate&#39;</span>] <span style="color:#f92672">&gt;=</span> <span style="color:#e6db74">&#34;2010-12-11&#34;</span>) <span style="color:#f92672">&amp;</span> (cus[<span style="color:#e6db74">&#39;InvoiceDate&#39;</span>] <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#34;2011-12-11&#34;</span>)
+]
+</code></pre></div><p>Check the dimensions of the dataset after filtering.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus_f<span style="color:#f92672">.</span>shape
+</code></pre></div><pre><code>(339702, 8)
+</code></pre>
+<p>Let&rsquo;s change the data types. We first define &lsquo;CustomerID&rsquo; as categorical, but we need to change it to integer first. We also define &lsquo;StockCode&rsquo; as categorical and convert the &lsquo;InvoiceDate&rsquo; to a datetime type.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus_f[<span style="color:#e6db74">&#39;CustomerID&#39;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Categorical(cus_f[<span style="color:#e6db74">&#39;CustomerID&#39;</span>]<span style="color:#f92672">.</span>astype(int))
+cus_f[<span style="color:#e6db74">&#39;StockCode&#39;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>Categorical(cus_f[<span style="color:#e6db74">&#39;StockCode&#39;</span>])
+cus_f[<span style="color:#e6db74">&#39;InvoiceDate&#39;</span>] <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>to_datetime(cus_f[<span style="color:#e6db74">&#39;InvoiceDate&#39;</span>])
+cus_f <span style="color:#f92672">=</span> cus_f<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Country&#39;</span>], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</code></pre></div><h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>Check the most purchased items.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus_f[<span style="color:#e6db74">&#39;Description&#39;</span>]<span style="color:#f92672">.</span>value_counts()<span style="color:#f92672">.</span>head()<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bar&#39;</span>)
+</code></pre></div><pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fac7deab310&gt;
+</code></pre>
+<p><img src="https://nchin212.github.io/images/customer_segmentation/barplot1.png" alt="png"></p>
+<p>Determine which invoice has most number of unique items.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">most_unique <span style="color:#f92672">=</span> cus_f<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;InvoiceNo&#39;</span>)[<span style="color:#e6db74">&#39;Description&#39;</span>]<span style="color:#f92672">.</span>nunique()<span style="color:#f92672">.</span>sort_values(ascending <span style="color:#f92672">=</span> False)
+most_unique<span style="color:#f92672">.</span>head()<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;bar&#39;</span>)
+</code></pre></div><pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fac69100e80&gt;
+</code></pre>
+<p><img src="https://nchin212.github.io/images/customer_segmentation/barplot2.png" alt="png"></p>
+<p>Determine the distribution of unit price.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus_f[<span style="color:#e6db74">&#39;UnitPrice&#39;</span>]<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;box&#39;</span>)
+</code></pre></div><pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fac6b2fd4f0&gt;
+</code></pre>
+<p><img src="https://nchin212.github.io/images/customer_segmentation/boxplot.png" alt="png"></p>
+<h2 id="feature-engineering">Feature Engineering</h2>
+<p>The following 2 columns will be created:</p>
+<ul>
+<li>
+<p><strong>InvoiceDay</strong> - Day of the invoice</p>
+</li>
+<li>
+<p><strong>TotalSum</strong> - Total amount customer purchased for a particular item</p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cus_f[<span style="color:#e6db74">&#39;InvoiceDay&#39;</span>] <span style="color:#f92672">=</span> cus_f<span style="color:#f92672">.</span>InvoiceDate<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: dt<span style="color:#f92672">.</span>datetime(x<span style="color:#f92672">.</span>year, x<span style="color:#f92672">.</span>month, x<span style="color:#f92672">.</span>day))
+ref_date <span style="color:#f92672">=</span> max(cus_f<span style="color:#f92672">.</span>InvoiceDay) <span style="color:#f92672">+</span> dt<span style="color:#f92672">.</span>timedelta(<span style="color:#ae81ff">1</span>)
+cus_f[<span style="color:#e6db74">&#39;TotalSum&#39;</span>] <span style="color:#f92672">=</span> cus_f<span style="color:#f92672">.</span>Quantity <span style="color:#f92672">*</span> cus_f<span style="color:#f92672">.</span>UnitPrice
+</code></pre></div><h2 id="recency-frequency-monetary-rfm">Recency, Frequency, Monetary (RFM)</h2>
+<p>The following are the details of RFM analysis:</p>
+<ul>
+<li>
+<p><strong>Recency</strong> - The amount of time since last purchase</p>
+</li>
+<li>
+<p><strong>Frequency</strong> - The total number of orders</p>
+</li>
+<li>
+<p><strong>Monetary</strong> - The total amount spent</p>
+</li>
+</ul>
+<p>Calculate RFM values for each customer.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rfm <span style="color:#f92672">=</span> cus_f<span style="color:#f92672">.</span>groupby(<span style="color:#e6db74">&#39;CustomerID&#39;</span>)<span style="color:#f92672">.</span>agg({
+     <span style="color:#e6db74">&#39;InvoiceNo&#39;</span>:<span style="color:#e6db74">&#39;count&#39;</span>,
+     <span style="color:#e6db74">&#39;TotalSum&#39;</span>:<span style="color:#e6db74">&#39;sum&#39;</span>,
+     <span style="color:#e6db74">&#39;InvoiceDay&#39;</span>: <span style="color:#66d9ef">lambda</span> x: ref_date <span style="color:#f92672">-</span> x<span style="color:#f92672">.</span>max()})
+</code></pre></div><p>Rename the columns.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rfm<span style="color:#f92672">.</span>rename(columns<span style="color:#f92672">=</span>{
+     <span style="color:#e6db74">&#39;InvoiceNo&#39;</span>:<span style="color:#e6db74">&#39;Frequency&#39;</span>,
+     <span style="color:#e6db74">&#39;TotalSum&#39;</span>:<span style="color:#e6db74">&#39;Monetary&#39;</span>,
+     <span style="color:#e6db74">&#39;InvoiceDay&#39;</span>:<span style="color:#e6db74">&#39;Recency&#39;</span>
+ }, inplace<span style="color:#f92672">=</span>True)
+</code></pre></div><p>Convert &lsquo;Recency&rsquo; column to numerical.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rfm[<span style="color:#e6db74">&#39;Recency&#39;</span>] <span style="color:#f92672">=</span> rfm[<span style="color:#e6db74">&#39;Recency&#39;</span>]<span style="color:#f92672">.</span>dt<span style="color:#f92672">.</span>days
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rfm
+</code></pre></div><pre><code>      Frequency	Monetary	Recency
+CustomerID			
+12346	1	77183.60	326
+12747	96	3837.45	        3
+12748	4051	30301.40	1
+12749	199	4090.88	        4
+12820	59	942.34	        4
+...	...	...	        ...
+18280	10	180.60	        278
+18281	7	80.82	        181
+18282	12	178.05	        8
+18283	756	2094.88	        4
+18287	70	1837.28	        43
+3849 rows × 3 columns
+</code></pre>
+<p>Apply log transformation to check the distributions of recency, frequency and monetary.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rfm_log <span style="color:#f92672">=</span> rfm[[<span style="color:#e6db74">&#39;Recency&#39;</span>, <span style="color:#e6db74">&#39;Frequency&#39;</span>, <span style="color:#e6db74">&#39;Monetary&#39;</span>]]<span style="color:#f92672">.</span>apply(np<span style="color:#f92672">.</span>log, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+rfm_log<span style="color:#f92672">.</span>hist()
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/customer_segmentation/hist.png" alt="png"></p>
+<h2 id="modelling">Modelling</h2>
+<p>K-means clustering will be used to cluster the data. The algorithm is as follows:</p>
+<p><strong>Step 1</strong> - Select a suitable number of groups, k</p>
+<p><strong>Step 2</strong> - Randomly select k distinct data points, which will be called cluster centroids</p>
+<p><strong>Step 3</strong> - Assign every data point to the closest cluster centroid</p>
+<p><strong>Step 4</strong> - Move the cluster centroid to the average of the points in a cluster</p>
+<p><strong>Step 5</strong> - Repeat Steps 3 and 4 until there are no changes in the clusters</p>
+<p>First, we need to determine a suitable value of k by creating a elbow plot.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">inertia <span style="color:#f92672">=</span> {}
+<span style="color:#66d9ef">for</span> k <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">11</span>):
+    mod <span style="color:#f92672">=</span> KMeans(n_clusters<span style="color:#f92672">=</span>k)
+    mod<span style="color:#f92672">.</span>fit(rfm_log)
+    inertia[k] <span style="color:#f92672">=</span> mod<span style="color:#f92672">.</span>inertia_
+
+sns<span style="color:#f92672">.</span>pointplot(x <span style="color:#f92672">=</span> list(inertia<span style="color:#f92672">.</span>keys()), y <span style="color:#f92672">=</span> list(inertia<span style="color:#f92672">.</span>values()))
+plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#39;K Numbers&#39;</span>)
+plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Inertia&#39;</span>)
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/customer_segmentation/elbow.png" alt="png"></p>
+<p>We select k=3 and build the model using k-means clustering with 3 clusters.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">model <span style="color:#f92672">=</span> KMeans(n_clusters<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>, random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>)
+model<span style="color:#f92672">.</span>fit(rfm_log)
+rfm_log[<span style="color:#e6db74">&#39;cluster&#39;</span>] <span style="color:#f92672">=</span> model<span style="color:#f92672">.</span>predict(rfm_log)
+rfm_log<span style="color:#f92672">.</span>head()
+</code></pre></div><pre><code>        Recency	        Frequency	Monetary	cluster
+CustomerID				
+12346	5.786897	0.000000	11.253942	2
+12747	1.098612	4.564348	8.252563	0
+12748	0.000000	8.306719	10.318949	0
+12749	1.386294	5.293305	8.316515	0
+12820	1.386294	4.077537	6.848366	0
+</code></pre>
+<p>Plot a 3D scatterplot to observe the clusters.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> mpl_toolkits.mplot3d <span style="color:#f92672">import</span> Axes3D
+fig<span style="color:#f92672">=</span>plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>,<span style="color:#ae81ff">12</span>))
+ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>axes(projection<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;3d&#39;</span>)
+ax<span style="color:#f92672">.</span>scatter(rfm_log<span style="color:#f92672">.</span>Recency, rfm_log<span style="color:#f92672">.</span>Frequency,
+                        rfm_log<span style="color:#f92672">.</span>Monetary, c<span style="color:#f92672">=</span>rfm_log<span style="color:#f92672">.</span>cluster,
+                        cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;viridis&#39;</span>, linewidth<span style="color:#f92672">=</span><span style="color:#ae81ff">0.5</span>, alpha<span style="color:#f92672">=</span><span style="color:#ae81ff">0.2</span>);
+plt<span style="color:#f92672">.</span>show()
+</code></pre></div><p><img src="https://nchin212.github.io/images/customer_segmentation/cluster.png" alt="png"></p>
+<p>Let&rsquo;s compare the centroid values.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">centroids_log <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(model<span style="color:#f92672">.</span>cluster_centers_, columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Recency&#39;</span>, <span style="color:#e6db74">&#39;Frequency&#39;</span>, <span style="color:#e6db74">&#39;Monetary&#39;</span>])
+centroids_log
+</code></pre></div><pre><code>        Recency	        Frequency	Monetary
+0	2.064102	5.082637	7.948802
+1	4.791228	2.337495	5.396649
+2	3.822030	3.949997	6.695534
+</code></pre>
+<p>Convert these centroid values back to the original scale.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">centroids_orig <span style="color:#f92672">=</span> centroids_log<span style="color:#f92672">.</span>apply(np<span style="color:#f92672">.</span>exp, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)<span style="color:#f92672">.</span>round(<span style="color:#ae81ff">3</span>)
+centroids_orig
+</code></pre></div><pre><code>        Recency	        Frequency	Monetary
+0	7.878	        161.199	        2832.180
+1	120.449	        10.355	        220.666
+2	45.697	        51.935	        808.786
+</code></pre>
+<h2 id="extracting-the-clusters">Extracting the clusters</h2>
+<p>Let&rsquo;s obtain the small spending customers (high recency, low frequency, low monetary) and large spending customers (low recency, high frequency, high monetary).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">small_customers <span style="color:#f92672">=</span> rfm_log[rfm_log<span style="color:#f92672">.</span>cluster <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>]
+
+small_customers <span style="color:#f92672">=</span> small_customers[[<span style="color:#e6db74">&#39;Recency&#39;</span>, <span style="color:#e6db74">&#39;Frequency&#39;</span>, <span style="color:#e6db74">&#39;Monetary&#39;</span>]]<span style="color:#f92672">.</span>apply(np<span style="color:#f92672">.</span>exp, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+small_customers[<span style="color:#e6db74">&#39;Recency&#39;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>rint(small_customers[<span style="color:#e6db74">&#39;Recency&#39;</span>])<span style="color:#f92672">.</span>astype(int)
+small_customers[<span style="color:#e6db74">&#39;Frequency&#39;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>rint(small_customers[<span style="color:#e6db74">&#39;Frequency&#39;</span>])<span style="color:#f92672">.</span>astype(int)
+small_customers[<span style="color:#e6db74">&#39;Monetary&#39;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>round(small_customers[<span style="color:#e6db74">&#39;Monetary&#39;</span>], <span style="color:#ae81ff">2</span>)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">small_customers
+</code></pre></div><pre><code>      Recency	Frequency  Monetary
+CustomerID			
+12821	215	6	   92.72
+12823	75	5	   1759.50
+12829	337	11	   293.00
+12831	263	9	   215.05
+12833	146	24	   417.38
+...	...	...	   ...
+18277	59	8	   110.38
+18278	74	9	   173.90
+18280	278	10	   180.60
+18281	181	7	   80.82
+18282	8	12	   178.05
+1330 rows × 3 columns
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">large_customers <span style="color:#f92672">=</span> rfm_log[rfm_log<span style="color:#f92672">.</span>cluster <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]
+
+large_customers <span style="color:#f92672">=</span> large_customers[[<span style="color:#e6db74">&#39;Recency&#39;</span>, <span style="color:#e6db74">&#39;Frequency&#39;</span>, <span style="color:#e6db74">&#39;Monetary&#39;</span>]]<span style="color:#f92672">.</span>apply(np<span style="color:#f92672">.</span>exp, axis <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+large_customers[<span style="color:#e6db74">&#39;Recency&#39;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>rint(large_customers[<span style="color:#e6db74">&#39;Recency&#39;</span>])<span style="color:#f92672">.</span>astype(int)
+large_customers[<span style="color:#e6db74">&#39;Frequency&#39;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>rint(large_customers[<span style="color:#e6db74">&#39;Frequency&#39;</span>])<span style="color:#f92672">.</span>astype(int)
+large_customers[<span style="color:#e6db74">&#39;Monetary&#39;</span>] <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>round(large_customers[<span style="color:#e6db74">&#39;Monetary&#39;</span>], <span style="color:#ae81ff">2</span>)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">large_customers
+</code></pre></div><pre><code>      Recency	Frequency  Monetary
+CustomerID			
+12747	3	96	   3837.45
+12748	1	4051	   30301.40
+12749	4	199	   4090.88
+12820	4	59	   942.34
+12826	3	82	   1319.72
+...	...	...	   ...
+18237	3	61	   987.10
+18241	10	104	   2073.09
+18245	8	175	   2567.06
+18272	3	166	   3078.58
+18283	4	756	   2094.88
+875 rows × 3 columns
+</code></pre>
+<p><a href="https://github.com/nchin212/Customer_Segmentation">Link to Github repository</a></p>
+<ul class="pa0">
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/Clustering" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Clustering</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/K-meansClustering" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">K-meansClustering</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/RFM" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">RFM</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://nchin212.github.io" >
+    &copy;  Nicholas Chin Wei Lun 2021 
+  </a>
+    <div>
+
+
+
+
+
+
+
+
+<a href="https://github.com/nchin212" target="_blank" class="link-transition github link dib z-999 pt3 pt0-l mr1" title="Github link" rel="noopener" aria-label="follow on Github——Opens in a new window">
+  <svg  height="32px"  style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+  <path d="M256,32C132.3,32,32,134.8,32,261.7c0,101.5,64.2,187.5,153.2,217.9c11.2,2.1,15.3-5,15.3-11.1   c0-5.5-0.2-19.9-0.3-39.1c-62.3,13.9-75.5-30.8-75.5-30.8c-10.2-26.5-24.9-33.6-24.9-33.6c-20.3-14.3,1.5-14,1.5-14   c22.5,1.6,34.3,23.7,34.3,23.7c20,35.1,52.4,25,65.2,19.1c2-14.8,7.8-25,14.2-30.7c-49.7-5.8-102-25.5-102-113.5   c0-25.1,8.7-45.6,23-61.6c-2.3-5.8-10-29.2,2.2-60.8c0,0,18.8-6.2,61.6,23.5c17.9-5.1,37-7.6,56.1-7.7c19,0.1,38.2,2.6,56.1,7.7   c42.8-29.7,61.5-23.5,61.5-23.5c12.2,31.6,4.5,55,2.2,60.8c14.3,16.1,23,36.6,23,61.6c0,88.2-52.4,107.6-102.3,113.3   c8,7.1,15.2,21.1,15.2,42.5c0,30.7-0.3,55.5-0.3,63c0,6.1,4,13.3,15.4,11C415.9,449.1,480,363.1,480,261.7   C480,134.8,379.7,32,256,32z"/>
+</svg>
+
+<span class="new-window"><svg  height="8px"  style="enable-background:new 0 0 1000 1000;" version="1.1" viewBox="0 0 1000 1000" width="8px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+<path d="M598 128h298v298h-86v-152l-418 418-60-60 418-418h-152v-86zM810 810v-298h86v298c0 46-40 86-86 86h-596c-48 0-86-40-86-86v-596c0-46 38-86 86-86h298v86h-298v596h596z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+</span></a>
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+    
+
+  <script src="https://nchin212.github.io/dist/js/app.3fc0f988d21662902933.js"></script>
+
+
+  </body>
+</html>

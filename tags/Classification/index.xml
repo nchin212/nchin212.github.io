@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Classification on Nicholas Chin Wei Lun</title>
+    <link>https://nchin212.github.io/tags/Classification/</link>
+    <description>Recent content in Classification on Nicholas Chin Wei Lun</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 20 Dec 2020 11:00:59 -0400</lastBuildDate><atom:link href="https://nchin212.github.io/tags/Classification/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Credit Card Fraud Detection</title>
+      <link>https://nchin212.github.io/post/credit_fraud/</link>
+      <pubDate>Sun, 20 Dec 2020 11:00:59 -0400</pubDate>
+      
+      <guid>https://nchin212.github.io/post/credit_fraud/</guid>
+      <description>Credit card companies handle numerous credit card transactions each day and there could be some cases of fraudulent transactions, where customers are charged for items they did not purchase. As such, it is important for companies to detect these fraudulent transactions to improve customer security and build up customer confidence in the company. In this project, we will explore some methods to resolve data imbalance and use logistic regression to classify the transactions as safe or fraudulent.</description>
+    </item>
+    
+  </channel>
+</rss>
