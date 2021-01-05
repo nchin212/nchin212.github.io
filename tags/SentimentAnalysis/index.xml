@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SentimentAnalysis on Nicholas Chin Wei Lun</title>
+    <link>https://nchin212.github.io/tags/SentimentAnalysis/</link>
+    <description>Recent content in SentimentAnalysis on Nicholas Chin Wei Lun</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 05 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://nchin212.github.io/tags/SentimentAnalysis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sentiment Analysis</title>
+      <link>https://nchin212.github.io/post/sentiment_analysis/</link>
+      <pubDate>Tue, 05 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/post/sentiment_analysis/</guid>
+      <description>Sentiment Analysis is a natural language processing technique used to determine whether data is positive, negative or neutral. It helps companies gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using some machine learning models for sentiment analysis. We will also be comparing between 2 vectorizer techniques, CountVectorizer and TfidfVectorizer.
+Data The data contains a collection of video game reviews written in the Amazon.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -3,92 +3,113 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://nchin212.github.io/tags/Classification/</loc>
-    <lastmod>2020-12-20T11:00:59-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/post/credit_fraud/</loc>
-    <lastmod>2020-12-20T11:00:59-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://nchin212.github.io/</loc>
-    <lastmod>2020-12-20T11:00:59-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/tags/LogisticRegression/</loc>
-    <lastmod>2020-12-20T11:00:59-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/tags/Oversampling/</loc>
-    <lastmod>2020-12-20T11:00:59-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/tags/</loc>
-    <lastmod>2020-12-20T11:00:59-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/tags/Clustering/</loc>
-    <lastmod>2020-12-11T10:58:08-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/post/customer_segmentation/</loc>
-    <lastmod>2020-12-11T10:58:08-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/tags/K-meansClustering/</loc>
-    <lastmod>2020-12-11T10:58:08-04:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://nchin212.github.io/tags/RFM/</loc>
-    <lastmod>2020-12-11T10:58:08-04:00</lastmod>
+    <lastmod>2021-01-05T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://nchin212.github.io/tags/NaturalLanguageProcessing/</loc>
-    <lastmod>2020-11-02T11:00:59-04:00</lastmod>
+    <lastmod>2021-01-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/Python/</loc>
+    <lastmod>2021-01-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/post/sentiment_analysis/</loc>
+    <lastmod>2021-01-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/SentimentAnalysis/</loc>
+    <lastmod>2021-01-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/</loc>
+    <lastmod>2021-01-05T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/Classification/</loc>
+    <lastmod>2020-12-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/post/credit_fraud/</loc>
+    <lastmod>2020-12-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/LogisticRegression/</loc>
+    <lastmod>2020-12-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/Oversampling/</loc>
+    <lastmod>2020-12-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/Clustering/</loc>
+    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/post/customer_segmentation/</loc>
+    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/K-meansClustering/</loc>
+    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://nchin212.github.io/tags/RFM/</loc>
+    <lastmod>2020-12-11T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://nchin212.github.io/tags/R/</loc>
-    <lastmod>2020-11-02T11:00:59-04:00</lastmod>
+    <lastmod>2020-11-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://nchin212.github.io/post/word_prediction/</loc>
-    <lastmod>2020-11-02T11:00:59-04:00</lastmod>
+    <lastmod>2020-11-02T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

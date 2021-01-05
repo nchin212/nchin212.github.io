@@ -6,15 +6,14 @@
     <description>Recent content in K-meansClustering on Nicholas Chin Wei Lun</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 11 Dec 2020 10:58:08 -0400</lastBuildDate><atom:link href="https://nchin212.github.io/tags/K-meansClustering/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 11 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://nchin212.github.io/tags/K-meansClustering/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Customer Segmentation</title>
       <link>https://nchin212.github.io/post/customer_segmentation/</link>
-      <pubDate>Fri, 11 Dec 2020 10:58:08 -0400</pubDate>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/customer_segmentation/</guid>
-      <description>Customer segmentation is the process of dividing customers into groups based on common characteristics. This is essential as it allows companies to market to each group effectively and appropriately. By marketing to each customer group differently, companies will be able to maximise their profits. To perform customer segmentation, we will be performing recency, frequency and monetary (RFM) analysis, followed by k-means clustering.
-Data The data contains various items purchased by various customers across 38 countries.</description>
+      <description>Customer segmentation is the process of dividing customers into groups based on common characteristics. This is essential as it allows companies to market to each group effectively and appropriately. Instead of analysing the entire customer base as a whole, it is better for companies to segment them into homogeneous groups, understand the traits of each group, and engage them with relevant campaigns rather than segmenting on just customer age or geography.</description>
     </item>
     
   </channel>

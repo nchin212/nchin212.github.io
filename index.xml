@@ -6,11 +6,21 @@
     <description>Recent content in Data Science Portfolio on Nicholas Chin Wei Lun</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 20 Dec 2020 11:00:59 -0400</lastBuildDate><atom:link href="https://nchin212.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 05 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://nchin212.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Sentiment Analysis</title>
+      <link>https://nchin212.github.io/post/sentiment_analysis/</link>
+      <pubDate>Tue, 05 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/post/sentiment_analysis/</guid>
+      <description>Sentiment Analysis is a natural language processing technique used to determine whether data is positive, negative or neutral. It helps companies gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using some machine learning models for sentiment analysis. We will also be comparing between 2 vectorizer techniques, CountVectorizer and TfidfVectorizer.
+Data The data contains a collection of video game reviews written in the Amazon.</description>
+    </item>
+    
     <item>
       <title>Credit Card Fraud Detection</title>
       <link>https://nchin212.github.io/post/credit_fraud/</link>
-      <pubDate>Sun, 20 Dec 2020 11:00:59 -0400</pubDate>
+      <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/credit_fraud/</guid>
       <description>Credit card companies handle numerous credit card transactions each day and there could be some cases of fraudulent transactions, where customers are charged for items they did not purchase. As such, it is important for companies to detect these fraudulent transactions to improve customer security and build up customer confidence in the company. In this project, we will explore some methods to resolve data imbalance and use logistic regression to classify the transactions as safe or fraudulent.</description>
@@ -19,17 +29,16 @@
     <item>
       <title>Customer Segmentation</title>
       <link>https://nchin212.github.io/post/customer_segmentation/</link>
-      <pubDate>Fri, 11 Dec 2020 10:58:08 -0400</pubDate>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/customer_segmentation/</guid>
-      <description>Customer segmentation is the process of dividing customers into groups based on common characteristics. This is essential as it allows companies to market to each group effectively and appropriately. By marketing to each customer group differently, companies will be able to maximise their profits. To perform customer segmentation, we will be performing recency, frequency and monetary (RFM) analysis, followed by k-means clustering.
-Data The data contains various items purchased by various customers across 38 countries.</description>
+      <description>Customer segmentation is the process of dividing customers into groups based on common characteristics. This is essential as it allows companies to market to each group effectively and appropriately. Instead of analysing the entire customer base as a whole, it is better for companies to segment them into homogeneous groups, understand the traits of each group, and engage them with relevant campaigns rather than segmenting on just customer age or geography.</description>
     </item>
     
     <item>
       <title>Word Prediction</title>
       <link>https://nchin212.github.io/post/word_prediction/</link>
-      <pubDate>Mon, 02 Nov 2020 11:00:59 -0400</pubDate>
+      <pubDate>Mon, 02 Nov 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/word_prediction/</guid>
       <description>Around the world, people are spending an increasing amount of time on their mobile devices for email, social networking, banking and a whole range of other activities. But typing on mobile devices can be a serious pain. The goal of this project is to learn and build predictive text models in R.
