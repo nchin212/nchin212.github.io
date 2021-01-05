@@ -494,11 +494,59 @@ SMOTE	                0.972953	0.051916	0.926471	0.098322	0.949749
 </ul>
 <div class="mt6 instapaper_ignoref">
       
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-nchin212-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      
       
       </div>
     </div>
 
-    <aside class="w-30-l mt6-l">
+    <aside class="w-30-l mt6-l"><div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">What&#39;s in this post</p>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#data">Data</a></li>
+    <li><a href="#loading-in-the-data">Loading in the Data</a></li>
+    <li><a href="#data-preparation">Data Preparation</a></li>
+    <li><a href="#data-imbalance">Data Imbalance</a></li>
+    <li><a href="#oversampling">Oversampling</a>
+      <ul>
+        <li><a href="#randomoversampler">RandomOverSampler</a></li>
+        <li><a href="#smote-synthetic-minority-oversampling-technique">SMOTE (Synthetic Minority Oversampling Technique)</a></li>
+      </ul>
+    </li>
+    <li><a href="#model-building">Model Building</a>
+      <ul>
+        <li><a href="#1-logistic-regression-on-imbalanced-dataset">1) Logistic Regression on imbalanced dataset</a></li>
+        <li><a href="#evaluation">Evaluation</a></li>
+        <li><a href="#2-logistic-regression-on-oversampled-dataset-randomoversampler">2) Logistic Regression on oversampled dataset (RandomOverSampler)</a></li>
+        <li><a href="#evaluation-1">Evaluation</a></li>
+        <li><a href="#3-logistic-regression-on-oversampled-dataset-smote">3) Logistic Regression on oversampled dataset (SMOTE)</a></li>
+        <li><a href="#evaluation-2">Evaluation</a></li>
+      </ul>
+    </li>
+    <li><a href="#results">Results</a></li>
+  </ul>
+</nav>
+  </div>
 
 
 

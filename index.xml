@@ -13,8 +13,7 @@
       <pubDate>Tue, 05 Jan 2021 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/sentiment_analysis/</guid>
-      <description>Sentiment Analysis is a natural language processing technique used to determine whether data is positive, negative or neutral. It helps companies gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using some machine learning models for sentiment analysis. We will also be comparing between 2 vectorizer techniques, CountVectorizer and TfidfVectorizer.
-Data The data contains a collection of video game reviews written in the Amazon.</description>
+      <description>Sentiment Analysis is a natural language processing technique used to determine whether the data is positive, negative or neutral. It helps companies monitor brand and product reputation and gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using naive bayes, logistic regression and support vector machines for sentiment analysis. We will also be comparing between 2 tokenization techniques, CountVectorizer and TfidfVectorizer in scikit-learn.</description>
     </item>
     
     <item>

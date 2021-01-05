@@ -36,11 +36,11 @@
 <meta itemprop="description" content="Classifying Amazon video game reviews as positive or negative">
 <meta itemprop="datePublished" content="2021-01-05T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-01-05T00:00:00+00:00" />
-<meta itemprop="wordCount" content="2772">
+<meta itemprop="wordCount" content="2785">
 
 
 
-<meta itemprop="keywords" content="Python,SentimentAnalysis,NaturalLanguageProcessing," />
+<meta itemprop="keywords" content="Python,SentimentAnalysis,NaturalLanguageProcessing,NaiveBayes,LogisticRegression,SVM," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Sentiment Analysis"/>
 <meta name="twitter:description" content="Classifying Amazon video game reviews as positive or negative"/>
@@ -183,7 +183,7 @@
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Sentiment Analysis is a natural language processing technique used to determine whether data is positive, negative or neutral. It helps companies gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using some machine learning models for sentiment analysis. We will also be comparing between 2 vectorizer techniques, CountVectorizer and TfidfVectorizer.</p>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Sentiment Analysis is a natural language processing technique used to determine whether the data is positive, negative or neutral. It helps companies monitor brand and product reputation and gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using naive bayes, logistic regression and support vector machines for sentiment analysis. We will also be comparing between 2 tokenization techniques, CountVectorizer and TfidfVectorizer in scikit-learn.</p>
 <h2 id="data">Data</h2>
 <p>The data contains a collection of video game reviews written in the Amazon.com marketplace and associated metadata from 1995 until 2015 and can be downloaded <a href="https://s3.amazonaws.com/amazon-reviews-pds/tsv/amazon_reviews_us_Video_Games_v1_00.tsv.gz">here</a>. It contains the following columns:</p>
 <p><strong>marketplace</strong> - 2 letter country code of the marketplace where the review was written.</p>
@@ -666,14 +666,86 @@ ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39
      <a href="https://nchin212.github.io/tags/NaturalLanguageProcessing" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">NaturalLanguageProcessing</a>
    </li>
   
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/NaiveBayes" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">NaiveBayes</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/LogisticRegression" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">LogisticRegression</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/SVM" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">SVM</a>
+   </li>
+  
 </ul>
 <div class="mt6 instapaper_ignoref">
+      
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-nchin212-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       
       
       </div>
     </div>
 
-    <aside class="w-30-l mt6-l">
+    <aside class="w-30-l mt6-l"><div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">What&#39;s in this post</p>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#data">Data</a></li>
+    <li><a href="#loading-in-the-data">Loading in the Data</a></li>
+    <li><a href="#data-cleaning">Data Cleaning</a></li>
+    <li><a href="#text-cleaning">Text Cleaning</a></li>
+    <li><a href="#exploratory-data-analysis">Exploratory Data Analysis</a>
+      <ul>
+        <li><a href="#distribution-of-star-ratings">Distribution of Star Ratings</a></li>
+        <li><a href="#distribution-of-number-of-words">Distribution of Number of Words</a></li>
+        <li><a href="#distribution-of-good-reviews">Distribution of Good Reviews</a></li>
+        <li><a href="#most-frequent-words">Most frequent words</a></li>
+        <li><a href="#most-frequent-words-for-positive-sentiment">Most frequent words for positive sentiment</a></li>
+        <li><a href="#most-frequent-words-for-negative-sentiment">Most frequent words for negative sentiment</a></li>
+      </ul>
+    </li>
+    <li><a href="#tokenization-using-countvectorizer">Tokenization using CountVectorizer</a></li>
+    <li><a href="#modelling-countvectorizer">Modelling (CountVectorizer)</a>
+      <ul>
+        <li><a href="#naive-bayes">Naive Bayes</a></li>
+        <li><a href="#logistic-regression">Logistic Regression</a></li>
+        <li><a href="#support-vector-machine-svm">Support Vector Machine (SVM)</a></li>
+        <li><a href="#summary-of-results">Summary of Results</a></li>
+      </ul>
+    </li>
+    <li><a href="#tokenization-using-tfidfvectorizer">Tokenization using TfidfVectorizer</a></li>
+    <li><a href="#modelling-tfidfvectorizer">Modelling (TfidfVectorizer)</a>
+      <ul>
+        <li><a href="#naive-bayes-1">Naive Bayes</a></li>
+        <li><a href="#logistic-regression-1">Logistic Regression</a></li>
+        <li><a href="#support-vector-machine">Support Vector Machine</a></li>
+        <li><a href="#summary-of-results-1">Summary of Results</a></li>
+      </ul>
+    </li>
+    <li><a href="#final-results">Final Results</a></li>
+  </ul>
+</nav>
+  </div>
 
 
 
