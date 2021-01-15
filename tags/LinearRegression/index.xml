@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LinearRegression on Nicholas Chin Wei Lun</title>
+    <link>https://nchin212.github.io/tags/LinearRegression/</link>
+    <description>Recent content in LinearRegression on Nicholas Chin Wei Lun</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 15 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://nchin212.github.io/tags/LinearRegression/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rental Bike Prediction</title>
+      <link>https://nchin212.github.io/post/rental_bike_prediction/</link>
+      <pubDate>Fri, 15 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/post/rental_bike_prediction/</guid>
+      <description>In this project, we built a regression model to predict rental bike demand. We conducted feature engineering to generate features from date and time. Much exploratory data analysis was done on average user counts over time. We implemented 2 stepwise regression models, 1 with and another without log transformation. The log transformed model achieved a higher R squared of 80%.</description>
+    </item>
+    
+  </channel>
+</rss>

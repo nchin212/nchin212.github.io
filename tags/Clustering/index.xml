@@ -13,7 +13,7 @@
       <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/customer_segmentation/</guid>
-      <description>Customer segmentation is the process of dividing customers into groups based on common characteristics. This is essential as it allows companies to market to each group effectively and appropriately. Instead of analysing the entire customer base as a whole, it is better for companies to segment them into homogeneous groups, understand the traits of each group, and engage them with relevant campaigns rather than segmenting on just customer age or geography.</description>
+      <description>In this project, we use recency, frequency and monetary (RFM) to analyse customer purchases from the United Kingdom. We select the number of clusters based on an elbow plot and will apply k-means clustering to segment the customers into 3 different groups: small spending customers, middle spending customers and large spending customers.</description>
     </item>
     
   </channel>

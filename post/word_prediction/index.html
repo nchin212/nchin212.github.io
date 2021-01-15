@@ -36,11 +36,11 @@
 <meta itemprop="description" content="Developing a Shiny application for word prediction">
 <meta itemprop="datePublished" content="2020-11-02T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2020-11-02T00:00:00+00:00" />
-<meta itemprop="wordCount" content="1507">
+<meta itemprop="wordCount" content="1696">
 
 
 
-<meta itemprop="keywords" content="R,NaturalLanguageProcessing,Shiny," />
+<meta itemprop="keywords" content="R,NaturalLanguageProcessing,TextPrediction,Shiny," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Word Prediction"/>
 <meta name="twitter:description" content="Developing a Shiny application for word prediction"/>
@@ -183,7 +183,16 @@
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Around the world, people are spending an increasing amount of time on
+    <div class="nested-copy-line-height lh-copy avenir bg-near-white f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>In this project, we created an application that predicts the next word based on the user&rsquo;s input words and achieved an accuracy score of 68%. We first combined text from US blogs, news and twitter and used quanteda to tokenize the text to 1gram, 2grams and 3grams. The stupid backoff algorithm was applied to compute scores for each word and the word with the highest score would be the next predicted word. A <a href="https://nchin212.shinyapps.io/word_prediction_app/">Shiny application</a> was built that allows the user to choose the number of predicted words to display and plots its respective wordcloud. We also created a pitch presentation to promote the application to employers.</p>
+<h2 id="tools-used">Tools Used</h2>
+<ul>
+<li>Language: R</li>
+<li>Packages: tidyr, caTools, dplyr, quanteda, wordcloud, RColorBrewer</li>
+<li>Data: <a href="https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip">Coursera</a></li>
+<li>Topics: R, NLP, Text Prediction, Stupid Backoff, Shiny</li>
+</ul>
+<h2 id="synopsis">Synopsis</h2>
+<p>Around the world, people are spending an increasing amount of time on
 their mobile devices for email, social networking, banking and a whole
 range of other activities. But typing on mobile devices can be a serious
 pain. The goal of this project is to learn and build predictive text
@@ -196,20 +205,13 @@ number of suggestions the user wants. A Shiny application will be
 created with this model. When the user types in some words, the model
 will give some predictions for the next word and a wordcloud of
 predictions will be displayed on screen.</p>
-<p>Relevant links:</p>
-<p><strong>Shiny Application :</strong>
-<!-- raw HTML omitted --><a href="https://nchin212.shinyapps.io/word_prediction_app/">https://nchin212.shinyapps.io/word_prediction_app/</a><!-- raw HTML omitted --></p>
-<p><strong>Pitch Presentation :</strong>
-<!-- raw HTML omitted --><a href="https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/pitch_presentation/pitch_presentation.html">https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/pitch_presentation/pitch_presentation.html</a><!-- raw HTML omitted --></p>
-<p><strong>Github Repository :</strong>
-<!-- raw HTML omitted --><a href="https://github.com/nchin212/Coursera_Data_Science_Capstone_Project">https://github.com/nchin212/Coursera_Data_Science_Capstone_Project</a><!-- raw HTML omitted --></p>
 <h2 id="data">Data</h2>
 <p>The data is downloaded from Coursera and can be obtained
 <a href="https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip">here</a>.
 The data is from a corpus called HC Corpora. The zip file contains 4
 folders, which are “en_US”, “de_DE”, “ru_RU” and “fi_FI”. Only
 “en_US” contains English text so it was utilised for this project. It
-contains 3 text files: blogs, news and twitter.</p>
+contains 3 text files: blogs, news and twitter. The data from the 3 sources are combined and there are 4 million lines altogether. Due to the size of the dataset and computing limitations, only 1% of the dataset was sampled.</p>
 <h2 id="stupid-backoff-model">Stupid Backoff Model</h2>
 <p>Before we dive into the data, it is essential to understand the model we
 will be using for prediction. Stupid backoff computes a score rather
@@ -246,13 +248,8 @@ multiplied to the result.</p>
 <p>The model will output the respective words and their scores and the word
 with the highest score is most likely to be the next word.</p>
 <h2 id="data-cleaning">Data Cleaning</h2>
-<p>The datasets are first combined and we notice that there are over 4
-million lines altogether. After several trials, 1% of the dataset
-appears to be a suitable sample. The sample is then split into training
-and validation sets. The training set is transformed into a corpus and
-tokenized. Numbers, symbols, punctuation, separators and social media
-tags are removed as they create unnecessary noise in the data. Stemming
-and removing stopwords are not done as it would affect the prediction
+<p>The sample is split into 80% training and 20% validation sets. The training set is transformed into a corpus and tokenized. Numbers, symbols, punctuation, separators and social media tags are removed as they create unnecessary noise in the data. Stemming
+and removing stopwords are not done as it would lower the prediction
 accuracy. Only 1grams, 2grams and 3grams dataframes are created due to
 computing limitations.</p>
 <p>The dataframes contain the following columns:</p>
@@ -266,17 +263,27 @@ next word</li>
 <p>The stupid backoff scores for each ngram have been precomputed using the
 above algorithm. This will help to save computation time and the
 prediction model will be able to predict words faster.</p>
-<p>The full data cleaning process can be seen in the following link:</p>
-<p><strong>Data Cleaning :</strong>
-<!-- raw HTML omitted --><a href="https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/data_cleaning/data_cleaning.html">https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/data_cleaning/data_cleaning.html</a><!-- raw HTML omitted --></p>
 <h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
 <p>Some exploratory data analysis is also done to check the number of lines
-and number of characters. Wordclouds are used to plot the most frequent
-1grams, 2grams and 3grams.</p>
-<p>The full exploratory data analysis process can be seen in the following
-link:</p>
-<p><strong>Exploratory Data Analysis :</strong>
-<!-- raw HTML omitted --><a href="https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/exploratory_data_analysis/exploratory_data_analysis.html">https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/exploratory_data_analysis/exploratory_data_analysis.html</a><!-- raw HTML omitted --></p>
+and number of characters.</p>
+<figure class="fl">
+    <img src="https://nchin212.github.io/images/word_prediction/hist.png"/> 
+</figure>
+
+<p>Wordclouds are used to plot the most frequent 1grams, 2grams and 3grams.
+<figure class="fl">
+    <img src="https://nchin212.github.io/images/word_prediction/unigram.png"/> 
+</figure>
+
+<figure class="fl">
+    <img src="https://nchin212.github.io/images/word_prediction/bigram.png"/> 
+</figure>
+
+<figure class="fl">
+    <img src="https://nchin212.github.io/images/word_prediction/trigram.png"/> 
+</figure>
+</p>
+<p>As expected, most of the words in the ngrams are stopwords which were not removed from the text data.</p>
 <h2 id="modelling">Modelling</h2>
 <p>The model we will be using is stupid backoff. The stupid backoff scores
 have already been computed for the 1grams, 2grams and 3grams dataframes
@@ -291,10 +298,6 @@ accordingly. If the user keys in no input, the most common words in the
 1grams dataset will be predicted as the next word.</p>
 <p><strong>Step 3 - Collate the scores and arrange them from highest to lowest :</strong> The word with the highest score is predicted to be the next most
 likely word.</p>
-<p>Load in functions from other file.</p>
-<pre><code>source('../word_prediction_app/functions.R')
-source('../data_cleaning/data_cleaning.R')
-</code></pre>
 <p>The following functions will be used:</p>
 <ul>
 <li>
@@ -345,11 +348,6 @@ and “weekend”. The predicted words appear to be fairly accurate.</p>
 <h2 id="accuracy">Accuracy</h2>
 <p>To determine its accuracy, we run the model on the validation set
 prepared during the data cleaning process.</p>
-<pre><code>source('../validation/validation.R')
-</code></pre>
-<p>The full validation process can be seen in the following link:</p>
-<p><strong>Validation :</strong>
-<!-- raw HTML omitted --><a href="https://github.com/nchin212/Coursera_Data_Science_Capstone_Project/blob/gh-pages/validation/validation.R">https://github.com/nchin212/Coursera_Data_Science_Capstone_Project/blob/gh-pages/validation/validation.R</a><!-- raw HTML omitted --></p>
 <p>The accuracy table is printed as follows:</p>
 <pre><code>accuracy_table
 
@@ -366,6 +364,23 @@ prediction and using 1 previous word.</p>
 <p>Perhaps other models such has Katz’s backoff model and BERT could be
 implemented to give a better result. Smoothing techniques such as
 Kneeser-Ney smoothing may also improve the accuracy.</p>
+<h2 id="application">Application</h2>
+<p><a href="https://nchin212.shinyapps.io/word_prediction_app/">Shiny Application</a></p>
+<p><img src="https://nchin212.github.io/images/word_prediction/app.png" alt="png"></p>
+<ol>
+<li>
+<p>The user types in some text in the text box</p>
+</li>
+<li>
+<p>The application displays the predicted words in the table, arranged from highest score to lowest score, where the word at the top is the highest possibility of being the next word</p>
+</li>
+<li>
+<p>The application also displays the word cloud of the predicted words according to their score</p>
+</li>
+<li>
+<p>The user is able to use the slider to select the number of words predicted and can also search for words in the table by typing into the search text box</p>
+</li>
+</ol>
 <h2 id="challenges">Challenges</h2>
 <p>This section describes the challenges faced during this project.</p>
 <p><strong>Challenge 1 - NLP is not easy :</strong> This was my first project on
@@ -386,9 +401,10 @@ working on large datasets.</p>
 <h2 id="final-thoughts">Final Thoughts</h2>
 <p>Overall, this was a very rewarding project as I had gained much
 knowledge on the aspects of word prediction and I was very satisfied
-with the final application designed. If you have made it this far, thank
-you for taking the time to read through my project! Many thanks to
-Coursera for providing me this opportunity to try out a new field.</p>
+with the final application designed. If you have made it this far, thank you for taking the time to read through my project! Many thanks to Coursera for providing me this opportunity to try out a new field.</p>
+<p><a href="https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/final_report/final_report.html">Link to Final Report</a></p>
+<p><a href="https://nchin212.shinyapps.io/word_prediction_app/">Link to Shiny Application</a></p>
+<p><a href="https://nchin212.github.io/Coursera_Data_Science_Capstone_Project/pitch_presentation/pitch_presentation.html">Link to Pitch Presentation</a></p>
 <p><a href="https://github.com/nchin212/Coursera_Data_Science_Capstone_Project">Link to Github repository</a></p>
 <ul class="pa0">
   
@@ -398,6 +414,10 @@ Coursera for providing me this opportunity to try out a new field.</p>
   
    <li class="list">
      <a href="https://nchin212.github.io/tags/NaturalLanguageProcessing" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">NaturalLanguageProcessing</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/TextPrediction" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">TextPrediction</a>
    </li>
   
    <li class="list">
@@ -436,12 +456,15 @@ Coursera for providing me this opportunity to try out a new field.</p>
     <p class="f5 b mb3">What&#39;s in this post</p>
       <nav id="TableOfContents">
   <ul>
+    <li><a href="#tools-used">Tools Used</a></li>
+    <li><a href="#synopsis">Synopsis</a></li>
     <li><a href="#data">Data</a></li>
     <li><a href="#stupid-backoff-model">Stupid Backoff Model</a></li>
     <li><a href="#data-cleaning">Data Cleaning</a></li>
     <li><a href="#exploratory-data-analysis">Exploratory Data Analysis</a></li>
     <li><a href="#modelling">Modelling</a></li>
     <li><a href="#accuracy">Accuracy</a></li>
+    <li><a href="#application">Application</a></li>
     <li><a href="#challenges">Challenges</a></li>
     <li><a href="#final-thoughts">Final Thoughts</a></li>
   </ul>

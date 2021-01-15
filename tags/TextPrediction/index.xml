@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TextPrediction on Nicholas Chin Wei Lun</title>
+    <link>https://nchin212.github.io/tags/TextPrediction/</link>
+    <description>Recent content in TextPrediction on Nicholas Chin Wei Lun</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 02 Nov 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://nchin212.github.io/tags/TextPrediction/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Word Prediction</title>
+      <link>https://nchin212.github.io/post/word_prediction/</link>
+      <pubDate>Mon, 02 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/post/word_prediction/</guid>
+      <description>In this project, we created an application that predicts the next word based on the user&amp;rsquo;s input words and achieved an accuracy score of 68%. We first combined text from US blogs, news and twitter and used quanteda to tokenize the text to 1gram, 2grams and 3grams. The stupid backoff algorithm was applied to compute scores for each word and the word with the highest score would be the next predicted word.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -6,7 +6,34 @@
     <description>Recent content in Tags on Nicholas Chin Wei Lun</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 05 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://nchin212.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 15 Jan 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://nchin212.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LinearRegression</title>
+      <link>https://nchin212.github.io/tags/LinearRegression/</link>
+      <pubDate>Fri, 15 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/tags/LinearRegression/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>R</title>
+      <link>https://nchin212.github.io/tags/R/</link>
+      <pubDate>Fri, 15 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/tags/R/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Regression</title>
+      <link>https://nchin212.github.io/tags/Regression/</link>
+      <pubDate>Fri, 15 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/tags/Regression/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>LogisticRegression</title>
       <link>https://nchin212.github.io/tags/LogisticRegression/</link>
@@ -62,6 +89,15 @@
     </item>
     
     <item>
+      <title>Adaboost</title>
+      <link>https://nchin212.github.io/tags/Adaboost/</link>
+      <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/tags/Adaboost/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Classification</title>
       <link>https://nchin212.github.io/tags/Classification/</link>
       <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
@@ -76,6 +112,15 @@
       <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/tags/Oversampling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RandomForest</title>
+      <link>https://nchin212.github.io/tags/RandomForest/</link>
+      <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/tags/RandomForest/</guid>
       <description></description>
     </item>
     
@@ -107,20 +152,20 @@
     </item>
     
     <item>
-      <title>R</title>
-      <link>https://nchin212.github.io/tags/R/</link>
-      <pubDate>Mon, 02 Nov 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://nchin212.github.io/tags/R/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Shiny</title>
       <link>https://nchin212.github.io/tags/Shiny/</link>
       <pubDate>Mon, 02 Nov 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/tags/Shiny/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TextPrediction</title>
+      <link>https://nchin212.github.io/tags/TextPrediction/</link>
+      <pubDate>Mon, 02 Nov 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://nchin212.github.io/tags/TextPrediction/</guid>
       <description></description>
     </item>
     

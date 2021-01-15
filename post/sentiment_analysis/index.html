@@ -36,7 +36,7 @@
 <meta itemprop="description" content="Classifying Amazon video game reviews as positive or negative">
 <meta itemprop="datePublished" content="2021-01-05T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2021-01-05T00:00:00+00:00" />
-<meta itemprop="wordCount" content="2785">
+<meta itemprop="wordCount" content="2672">
 
 
 
@@ -183,24 +183,19 @@
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Sentiment Analysis is a natural language processing technique used to determine whether the data is positive, negative or neutral. It helps companies monitor brand and product reputation and gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using naive bayes, logistic regression and support vector machines for sentiment analysis. We will also be comparing between 2 tokenization techniques, CountVectorizer and TfidfVectorizer in scikit-learn.</p>
+    <div class="nested-copy-line-height lh-copy avenir bg-near-white f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>In this project, we analyzed Amazon video game reviews by classifying them as positive or negative. We tokenized the reviews using 2 different vectorizers, CountVectorizer and TfidfVectorizer. We then applied naive bayes, logistic regression and support vector machine (SVM) on the 2 different vectorizers. Naive Bayes with CountVectorizer had the highest f1-score of around 88%.</p>
+<h2 id="tools-used">Tools Used</h2>
+<ul>
+<li>Language: Python</li>
+<li>Packages: pandas, numpy, re, string, matplotlib, seaborn, wordcloud, seaborn, sklearn, nltk</li>
+<li>Data: <a href="https://s3.amazonaws.com/amazon-reviews-pds/tsv/index.txt">Amazon Reviews</a>, download link <a href="https://s3.amazonaws.com/amazon-reviews-pds/tsv/amazon_reviews_us_Video_Games_v1_00.tsv.gz">here</a></li>
+<li>Topics: Python, Sentiment Analysis, NLP, TFIDF, Naive Bayes, Logistic Regression, SVM</li>
+</ul>
+<h2 id="what-is-sentiment-analysis">What is Sentiment Analysis?</h2>
+<p>Sentiment Analysis is a natural language processing technique used to determine whether the data is positive, negative or neutral. It helps companies monitor brand and product reputation and gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using naive bayes, logistic regression and support vector machines for sentiment analysis. We will also be comparing between 2 tokenization techniques, CountVectorizer and TfidfVectorizer in scikit-learn.</p>
 <h2 id="data">Data</h2>
 <p>The data contains a collection of video game reviews written in the Amazon.com marketplace and associated metadata from 1995 until 2015 and can be downloaded <a href="https://s3.amazonaws.com/amazon-reviews-pds/tsv/amazon_reviews_us_Video_Games_v1_00.tsv.gz">here</a>. It contains the following columns:</p>
-<p><strong>marketplace</strong> - 2 letter country code of the marketplace where the review was written.</p>
-<p><strong>customer_id</strong> - Random identifier that can be used to aggregate reviews written by a single author.</p>
-<p><strong>review_id</strong> - The unique ID of the review.</p>
-<p><strong>product_id</strong> - The unique Product ID the review pertains to.</p>
-<p><strong>product_parent</strong> - Random identifier that can be used to aggregate reviews for the same product.</p>
-<p><strong>product_title</strong>  - Title of the product.</p>
-<p><strong>product_category</strong>  - Broad product category that can be used to group reviews (also used to group the dataset into coherent parts).</p>
-<p><strong>star_rating</strong>  - The 1-5 star rating of the review.</p>
-<p><strong>helpful_votes</strong> - Number of helpful votes.</p>
-<p><strong>total_votes</strong>  - Number of total votes the review received.</p>
-<p><strong>vine</strong> - Review was written as part of the Vine program.</p>
-<p><strong>verified_purchase</strong> - The review is on a verified purchase.</p>
-<p><strong>review_headline</strong> - The title of the review.</p>
-<p><strong>review_body</strong> - The review text.</p>
-<p><strong>review_date</strong> - The date the review was written.</p>
+<p><img src="https://nchin212.github.io/images/sentiment_analysis/table1.png" alt="png"></p>
 <h2 id="loading-in-the-data">Loading in the Data</h2>
 <p>Load in the required libraries.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> pandas <span style="color:#f92672">as</span> pd
@@ -292,7 +287,7 @@ amazonReviews<span style="color:#f92672">.</span>good_review[amazonReviews<span 
     text <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">&#39;\w*\d\w*&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>, text)
     <span style="color:#66d9ef">return</span> text
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">amazonReviews[<span style="color:#e6db74">&#39;review_body&#39;</span>] <span style="color:#f92672">=</span> amazonReviews[<span style="color:#e6db74">&#39;review_body&#39;</span>]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: clean_text(x))
-</code></pre></div><p>Remove stopwords from the texts.</p>
+</code></pre></div><p>Remove stopwords from the texts. This is necessary as the stopwords do not have any sentiment.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">stop <span style="color:#f92672">=</span> stopwords<span style="color:#f92672">.</span>words(<span style="color:#e6db74">&#39;english&#39;</span>)
 
 amazonReviews[<span style="color:#e6db74">&#39;review_body&#39;</span>] <span style="color:#f92672">=</span> amazonReviews[<span style="color:#e6db74">&#39;review_body&#39;</span>]<span style="color:#f92672">.</span>apply(<span style="color:#66d9ef">lambda</span> x: <span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">.</span>join(x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> x<span style="color:#f92672">.</span>split() <span style="color:#66d9ef">if</span> x <span style="color:#f92672">not</span> <span style="color:#f92672">in</span> stop))
@@ -322,9 +317,7 @@ X_train, X_test, y_train, y_test <span style="color:#f92672">=</span> train_test
 plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Star Ratings&#34;</span>)
 plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Number of Reviews&#39;</span>)
 plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Distribution of Star Ratings&#39;</span>)
-</code></pre></div><pre><code>Text(0.5, 1.0, 'Distribution of Star Ratings')
-</code></pre>
-<p><img src="https://nchin212.github.io/images/sentiment_analysis/bar1.png" alt="png"></p>
+</code></pre></div><p><img src="https://nchin212.github.io/images/sentiment_analysis/bar1.png" alt="png"></p>
 <p>There appears to be many more customers who give a high number of stars (4 or 5) as compared to low number of stars.</p>
 <h3 id="distribution-of-number-of-words">Distribution of Number of Words</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sampled_reviews<span style="color:#f92672">.</span>review_body<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>split()<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>len()<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;hist&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;red&#39;</span>,figsize<span style="color:#f92672">=</span> (<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">6</span>), range<span style="color:#f92672">=</span>(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">600</span>))
@@ -333,9 +326,7 @@ plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Di
 plt<span style="color:#f92672">.</span>xlabel(<span style="color:#e6db74">&#34;Number of Words&#34;</span>)
 plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Number of Reviews&#39;</span>)
 plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Distribution of Number of Words&#39;</span>)
-</code></pre></div><pre><code>Text(0.5, 1.0, 'Distribution of Number of Words')
-</code></pre>
-<p><img src="https://nchin212.github.io/images/sentiment_analysis/bar2.png" alt="png"></p>
+</code></pre></div><p><img src="https://nchin212.github.io/images/sentiment_analysis/bar2.png" alt="png"></p>
 <h3 id="distribution-of-good-reviews">Distribution of Good Reviews</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">sampled_reviews_positive <span style="color:#f92672">=</span> sampled_reviews[sampled_reviews[<span style="color:#e6db74">&#39;good_review&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>]
 sampled_reviews_negative <span style="color:#f92672">=</span> sampled_reviews[sampled_reviews[<span style="color:#e6db74">&#39;good_review&#39;</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>]
@@ -345,9 +336,7 @@ number<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=
 
 plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;Number of Reviews&#39;</span>)
 plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Distribution of Good Reviews&#39;</span>)
-</code></pre></div><pre><code>Text(0.5, 1.0, 'Distribution of Good Reviews')
-</code></pre>
-<p><img src="https://nchin212.github.io/images/sentiment_analysis/bar3.png" alt="png"></p>
+</code></pre></div><p><img src="https://nchin212.github.io/images/sentiment_analysis/bar3.png" alt="png"></p>
 <h3 id="most-frequent-words">Most frequent words</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">text_for_cloud <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34; &#34;</span><span style="color:#f92672">.</span>join(x <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> sampled_reviews[<span style="color:#e6db74">&#39;review_body&#39;</span>])
 wordcloud <span style="color:#f92672">=</span> WordCloud(background_color<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;white&#34;</span>)<span style="color:#f92672">.</span>generate(text_for_cloud)
@@ -487,7 +476,7 @@ plt<span style="color:#f92672">.</span>show()
    macro avg       0.37      0.50      0.42      1500
 weighted avg       0.54      0.74      0.63      1500
 </code></pre>
-<h3 id="summary-of-results">Summary of Results</h3>
+<h3 id="summary-of-results-countvectorizer">Summary of Results (CountVectorizer)</h3>
 <p>Create a table that collates the results from the classification tables.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">classification_table</span>(y_test, <span style="color:#f92672">*</span>args):
     df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Accuracy&#39;</span>,<span style="color:#e6db74">&#39;Precision&#39;</span>,<span style="color:#e6db74">&#39;Recall&#39;</span>,<span style="color:#e6db74">&#39;F1-score&#39;</span>])
@@ -511,7 +500,7 @@ SVM CV                  0.738000   0.738000  1.000000  0.849252
 <p>Rather than compute the frequency of words in a text, tf-idf, which stands for term frequency - inverse document frequency, computes how relevant a term is in a document. Take note that the following calculations are used for scikit-learn&rsquo;s TfidfVectorizer so how tf-idf is calculated in other cases may vary. The details are as follows:</p>
 <p><strong>TF (Term Frequency)</strong> - Measures the frequency of a word in a text, calculated by taking the number of times the word occurs in the text divided by the total number of words in the text.</p>
 <p><strong>IDF (Inverse Document Frequency)</strong> - Measures how much information the word provides, i.e., if it&rsquo;s common or rare across all text, calculated as follows: ln(n + 1 / df + 1) + 1, where n refers to the total number of texts and df (document frequency) refers to the number of texts that contain the word. IDF diminishes the weight of terms that occur very frequently in the document set and increases the weight of terms that occur rarely.</p>
-<p><strong>TF-IDF (Term Frequency - Inverse Document Frequency)</strong> - Reflects how important a word is to a document, calculated by taking TF multiplied by IDF</p>
+<p><strong>TF-IDF (Term Frequency - Inverse Document Frequency)</strong> - Reflects how important a word is to a document, calculated by taking TF multiplied by IDF.</p>
 <p>The tf-idf vectors are then normalized by the Euclidean norm, resulting in the output produced by TfidfVectorizer.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">tfidf_vect <span style="color:#f92672">=</span> TfidfVectorizer(ngram_range <span style="color:#f92672">=</span> (<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>))
 tfidf_vect_train <span style="color:#f92672">=</span> tfidf_vect<span style="color:#f92672">.</span>fit_transform(X_train)
@@ -606,7 +595,7 @@ plt<span style="color:#f92672">.</span>show()
    macro avg       0.37      0.50      0.42      1500
 weighted avg       0.54      0.74      0.63      1500
 </code></pre>
-<h3 id="summary-of-results-1">Summary of Results</h3>
+<h3 id="summary-of-results-tfidfvectorizer">Summary of Results (TfidfVectorizer)</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">results_tv <span style="color:#f92672">=</span> classification_table(y_test,y_pred_tv_naive, y_pred_tv_log, y_pred_tv_svm)
 results_tv<span style="color:#f92672">.</span>index <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Naive Bayes TV&#39;</span>, <span style="color:#e6db74">&#39;Logistic Regression TV&#39;</span>,<span style="color:#e6db74">&#39;SVM TV&#39;</span>]
 results_tv
@@ -619,14 +608,7 @@ SVM TV                  0.738000   0.738000  1.00000  0.849252
 <p>Combine the 2 summary of results.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">combined <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>concat([results_cv,results_tv], axis<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>)
 combined
-</code></pre></div><pre><code>                        Accuracy   Precision Recall    F1-score
-Naive Bayes CV          0.816667   0.822981  0.957543  0.885177
-Logistic Regression CV  0.810667   0.848434  0.905149  0.875874
-SVM CV                  0.738000   0.738000  1.000000  0.849252
-Naive Bayes TV          0.740667   0.739973  1.000000  0.850557
-Logistic Regression TV  0.801333   0.799408  0.975610  0.878763
-SVM TV                  0.738000   0.738000  1.000000  0.849252
-</code></pre>
+</code></pre></div><p><img src="https://nchin212.github.io/images/sentiment_analysis/table2.png" alt="png"></p>
 <p>Since the data is quite unbalanced, accuracy will not be a good indicator for which is the better model since the models will be biased towards the majority class. Thus, we should compare the f1-scores.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">8</span>))
 x <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(<span style="color:#ae81ff">3</span>)
@@ -710,6 +692,8 @@ ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39
     <p class="f5 b mb3">What&#39;s in this post</p>
       <nav id="TableOfContents">
   <ul>
+    <li><a href="#tools-used">Tools Used</a></li>
+    <li><a href="#what-is-sentiment-analysis">What is Sentiment Analysis?</a></li>
     <li><a href="#data">Data</a></li>
     <li><a href="#loading-in-the-data">Loading in the Data</a></li>
     <li><a href="#data-cleaning">Data Cleaning</a></li>
@@ -730,7 +714,7 @@ ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39
         <li><a href="#naive-bayes">Naive Bayes</a></li>
         <li><a href="#logistic-regression">Logistic Regression</a></li>
         <li><a href="#support-vector-machine-svm">Support Vector Machine (SVM)</a></li>
-        <li><a href="#summary-of-results">Summary of Results</a></li>
+        <li><a href="#summary-of-results-countvectorizer">Summary of Results (CountVectorizer)</a></li>
       </ul>
     </li>
     <li><a href="#tokenization-using-tfidfvectorizer">Tokenization using TfidfVectorizer</a></li>
@@ -739,7 +723,7 @@ ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39
         <li><a href="#naive-bayes-1">Naive Bayes</a></li>
         <li><a href="#logistic-regression-1">Logistic Regression</a></li>
         <li><a href="#support-vector-machine">Support Vector Machine</a></li>
-        <li><a href="#summary-of-results-1">Summary of Results</a></li>
+        <li><a href="#summary-of-results-tfidfvectorizer">Summary of Results (TfidfVectorizer)</a></li>
       </ul>
     </li>
     <li><a href="#final-results">Final Results</a></li>

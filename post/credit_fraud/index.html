@@ -36,11 +36,11 @@
 <meta itemprop="description" content="Classifying transactions as safe or fraudulent">
 <meta itemprop="datePublished" content="2020-12-20T00:00:00+00:00" />
 <meta itemprop="dateModified" content="2020-12-20T00:00:00+00:00" />
-<meta itemprop="wordCount" content="2125">
+<meta itemprop="wordCount" content="2689">
 
 
 
-<meta itemprop="keywords" content="Python,Classification,LogisticRegression,Oversampling," />
+<meta itemprop="keywords" content="Python,Classification,LogisticRegression,Oversampling,RandomForest,Adaboost," />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Credit Card Fraud Detection"/>
 <meta name="twitter:description" content="Classifying transactions as safe or fraudulent"/>
@@ -183,10 +183,20 @@
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>Credit card companies handle numerous credit card transactions each day and there could be some cases of fraudulent transactions, where customers are charged for items they did not purchase. As such, it is important for companies to detect these fraudulent transactions to improve customer security and build up customer confidence in the company. In this project, we will explore some methods to resolve data imbalance and use logistic regression to classify the transactions as safe or fraudulent.</p>
+    <div class="nested-copy-line-height lh-copy avenir bg-near-white f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>In this project, we analyzed credit card transactions made by European cardholders by classifying them as safe or fraudulent. We tried 2 different oversampling techniques, RandomOverSampler and Synthetic Minority Oversampling Technique (SMOTE). We also
+implemented logistic regression, random forest and adaboost on the imbalanced data and oversampled data. Random Forest with RandomOverSampler achieved the highest f1 score of around 87%.</p>
+<h2 id="tools-used">Tools Used</h2>
+<ul>
+<li>Language: Python</li>
+<li>Packages: pandas, numpy, matplotlib, seaborn, sklearn, imblearn</li>
+<li>Data: <a href="https://www.kaggle.com/mlg-ulb/creditcardfraud">Kaggle</a></li>
+<li>Topics: Python, Classification, Data Imbalance, Oversampling, RandomOverSampler, SMOTE, Logistic Regression, Random Forest, Adaboost</li>
+</ul>
+<h2 id="synopsis">Synopsis</h2>
+<p>Credit card companies handle numerous credit card transactions each day and there could be some cases of fraudulent transactions, where customers are charged for items they did not purchase. As such, it is important for companies to detect these fraudulent transactions to improve customer security and build up customer confidence in the company. In this project, we will explore some methods to resolve data imbalance and use logistic regression, random forest and adaboost to classify the transactions as safe or fraudulent.</p>
 <h2 id="data">Data</h2>
-<p>The dataset is taken from Kaggle and can be obtained <a href="https://www.kaggle.com/mlg-ulb/creditcardfraud">here</a>.</p>
-<p>The dataset contains transactions made by credit cards in September 2013 by European cardholders. Features V1, V2, … V28 are the principal components obtained with PCA, the only features which have not been transformed with PCA are &lsquo;Time&rsquo; and &lsquo;Amount&rsquo;. Feature &lsquo;Time&rsquo; contains the seconds elapsed between each transaction and the first transaction in the dataset. The feature &lsquo;Amount&rsquo; is the transaction Amount, this feature can be used for example-dependant cost-sensitive learning. The feature &lsquo;Class&rsquo; is the response variable and it takes value 1 in case of fraud and 0 otherwise.</p>
+<p>The dataset is taken from <a href="https://www.kaggle.com/mlg-ulb/creditcardfraud">Kaggle</a>. It contains transactions made by credit cards in September 2013 by European cardholders. Due to confidentiality issues, Kaggle is unable to provide the original features and more background information about the data. It contains the following columns:</p>
+<p><img src="https://nchin212.github.io/images/credit_fraud/table1.png" alt="png"></p>
 <h2 id="loading-in-the-data">Loading in the Data</h2>
 <p>Load in the libraries.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> numpy <span style="color:#f92672">as</span> np
@@ -199,51 +209,53 @@
 <span style="color:#f92672">from</span> sklearn.model_selection <span style="color:#f92672">import</span> train_test_split
 <span style="color:#f92672">from</span> sklearn.linear_model <span style="color:#f92672">import</span> LogisticRegression
 <span style="color:#f92672">from</span> sklearn.metrics <span style="color:#f92672">import</span> confusion_matrix, classification_report, roc_curve, auc, accuracy_score, precision_score, recall_score, f1_score
+<span style="color:#f92672">from</span> sklearn.ensemble <span style="color:#f92672">import</span> RandomForestClassifier, AdaBoostClassifier
 
 <span style="color:#f92672">from</span> imblearn.over_sampling <span style="color:#f92672">import</span> RandomOverSampler
 <span style="color:#f92672">from</span> imblearn.over_sampling <span style="color:#f92672">import</span> SMOTE
 </code></pre></div><p>Load in the csv file and check its first few rows.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>read_csv(<span style="color:#e6db74">&#34;creditcard.csv&#34;</span>)
 </code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit<span style="color:#f92672">.</span>head()
-</code></pre></div><pre><code>        Time	V1	        V2	        V3	        V4	        V5	        V6	        V7	        V8	        V9	        ...	V21	        V22	        V23	        V24	        V25	        V26	        V27	        V28	        Amount Class
-0	0.0	-1.359807	-0.072781	2.536347	1.378155	-0.338321	0.462388	0.239599	0.098698	0.363787	...	-0.018307	0.277838	-0.110474	0.066928	0.128539	-0.189115	0.133558	-0.021053	149.62	0
-1	0.0	1.191857	0.266151	0.166480	0.448154	0.060018	-0.082361	-0.078803	0.085102	-0.255425	...	-0.225775	-0.638672	0.101288	-0.339846	0.167170	0.125895	-0.008983	0.014724	2.69	0
-2	1.0	-1.358354	-1.340163	1.773209	0.379780	-0.503198	1.800499	0.791461	0.247676	-1.514654	...	0.247998	0.771679	0.909412	-0.689281	-0.327642	-0.139097	-0.055353	-0.059752	378.66	0
-3	1.0	-0.966272	-0.185226	1.792993	-0.863291	-0.010309	1.247203	0.237609	0.377436	-1.387024	...	-0.108300	0.005274	-0.190321	-1.175575	0.647376	-0.221929	0.062723	0.061458	123.50	0
-4	2.0	-1.158233	0.877737	1.548718	0.403034	-0.407193	0.095921	0.592941	-0.270533	0.817739	...	-0.009431	0.798278	-0.137458	0.141267	-0.206010	0.502292	0.219422	0.215153	69.99	0
-5 rows × 31 columns
+</code></pre></div><pre><code>         V1	        V2	        V3	        V4	        V5	        V6	        V7	        V8	        V9	        V10	        ...	V22	        V23	        V24	        V25	        V26	        V27	        V28	        Class	norm_amount	norm_time
+0	-1.359807	-0.072781	2.536347	1.378155	-0.338321	0.462388	0.239599	0.098698	0.363787	0.090794	...	0.277838	-0.110474	0.066928	0.128539	-0.189115	0.133558	-0.021053	0	0.244964	-1.996583
+1	1.191857	0.266151	0.166480	0.448154	0.060018	-0.082361	-0.078803	0.085102	-0.255425	-0.166974	...	-0.638672	0.101288	-0.339846	0.167170	0.125895	-0.008983	0.014724	0	-0.342475	-1.996583
+2	-1.358354	-1.340163	1.773209	0.379780	-0.503198	1.800499	0.791461	0.247676	-1.514654	0.207643	...	0.771679	0.909412	-0.689281	-0.327642	-0.139097	-0.055353	-0.059752	0	1.160686	-1.996562
+3	-0.966272	-0.185226	1.792993	-0.863291	-0.010309	1.247203	0.237609	0.377436	-1.387024	-0.054952	...	0.005274	-0.190321	-1.175575	0.647376	-0.221929	0.062723	0.061458	0	0.140534	-1.996562
+4	-1.158233	0.877737	1.548718	0.403034	-0.407193	0.095921	0.592941	-0.270533	0.817739	0.753074	...	0.798278	-0.137458	0.141267	-0.206010	0.502292	0.219422	0.215153	0	-0.073403	-1.996541
 </code></pre>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit<span style="color:#f92672">.</span>shape
 </code></pre></div><pre><code>(284807, 31)
 </code></pre>
-<h2 id="data-preparation">Data Preparation</h2>
-<p>Separate the output variable from the predictor variables.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">output_var <span style="color:#f92672">=</span> credit[<span style="color:#e6db74">&#39;Class&#39;</span>]
-credit<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Class&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-</code></pre></div><p>Normalize the &lsquo;Amount&rsquo; column and remove the &lsquo;Time&rsquo; column.</p>
+<h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>Plot a histogram for each column to check their distributions.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit<span style="color:#f92672">.</span>hist(bins<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>, figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">15</span>), color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;orange&#39;</span>);
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/hist1.png" alt="png"></p>
+<p>Plot the transaction amounts over time.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit[[<span style="color:#e6db74">&#39;Time&#39;</span>,<span style="color:#e6db74">&#39;Amount&#39;</span>]]<span style="color:#f92672">.</span>set_index(<span style="color:#e6db74">&#39;Time&#39;</span>)<span style="color:#f92672">.</span>plot(kind<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;line&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;brown&#39;</span>)
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/line1.png" alt="png"></p>
+<h2 id="data-cleaning">Data Cleaning</h2>
+<p>Normalize the &lsquo;Amount&rsquo; column and &lsquo;Time&rsquo; column.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit[<span style="color:#e6db74">&#39;norm_amount&#39;</span>] <span style="color:#f92672">=</span> StandardScaler()<span style="color:#f92672">.</span>fit_transform(credit[<span style="color:#e6db74">&#39;Amount&#39;</span>]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
+credit[<span style="color:#e6db74">&#39;norm_time&#39;</span>] <span style="color:#f92672">=</span> StandardScaler()<span style="color:#f92672">.</span>fit_transform(credit[<span style="color:#e6db74">&#39;Time&#39;</span>]<span style="color:#f92672">.</span>values<span style="color:#f92672">.</span>reshape(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>))
 credit<span style="color:#f92672">.</span>drop([<span style="color:#e6db74">&#39;Time&#39;</span>,<span style="color:#e6db74">&#39;Amount&#39;</span>],axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
-credit<span style="color:#f92672">.</span>head()
-</code></pre></div><pre><code>        V1	        V2	        V3	        V4	        V5	        V6	        V7	        V8	        V9	        V10	        ...	V20	        V21	        V22	        V23	        V24	        V25	        V26	        V27	        V28	        norm_amount
-0	-1.359807	-0.072781	2.536347	1.378155	-0.338321	0.462388	0.239599	0.098698	0.363787	0.090794	...	0.251412	-0.018307	0.277838	-0.110474	0.066928	0.128539	-0.189115	0.133558	-0.021053	0.244964
-1	1.191857	0.266151	0.166480	0.448154	0.060018	-0.082361	-0.078803	0.085102	-0.255425	-0.166974	...	-0.069083	-0.225775	-0.638672	0.101288	-0.339846	0.167170	0.125895	-0.008983	0.014724	-0.342475
-2	-1.358354	-1.340163	1.773209	0.379780	-0.503198	1.800499	0.791461	0.247676	-1.514654	0.207643	...	0.524980	0.247998	0.771679	0.909412	-0.689281	-0.327642	-0.139097	-0.055353	-0.059752	1.160686
-3	-0.966272	-0.185226	1.792993	-0.863291	-0.010309	1.247203	0.237609	0.377436	-1.387024	-0.054952	...	-0.208038	-0.108300	0.005274	-0.190321	-1.175575	0.647376	-0.221929	0.062723	0.061458	0.140534
-4	-1.158233	0.877737	1.548718	0.403034	-0.407193	0.095921	0.592941	-0.270533	0.817739	0.753074	...	0.408542	-0.009431	0.798278	-0.137458	0.141267	-0.206010	0.502292	0.219422	0.215153	-0.073403
-5 rows × 29 columns
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">credit<span style="color:#f92672">.</span>head()
+</code></pre></div><pre><code>        V1	        V2	        V3	        V4	        V5	        V6	        V7	        V8	        V9	        V10	        ...	V22	        V23	        V24	        V25	        V26	        V27	        V28	        Class	norm_amount	norm_time
+0	-1.359807	-0.072781	2.536347	1.378155	-0.338321	0.462388	0.239599	0.098698	0.363787	0.090794	...	0.277838	-0.110474	0.066928	0.128539	-0.189115	0.133558	-0.021053	0	0.244964	-1.996583
+1	1.191857	0.266151	0.166480	0.448154	0.060018	-0.082361	-0.078803	0.085102	-0.255425	-0.166974	...	-0.638672	0.101288	-0.339846	0.167170	0.125895	-0.008983	0.014724	0	-0.342475	-1.996583
+2	-1.358354	-1.340163	1.773209	0.379780	-0.503198	1.800499	0.791461	0.247676	-1.514654	0.207643	...	0.771679	0.909412	-0.689281	-0.327642	-0.139097	-0.055353	-0.059752	0	1.160686	-1.996562
+3	-0.966272	-0.185226	1.792993	-0.863291	-0.010309	1.247203	0.237609	0.377436	-1.387024	-0.054952	...	0.005274	-0.190321	-1.175575	0.647376	-0.221929	0.062723	0.061458	0	0.140534	-1.996562
+4	-1.158233	0.877737	1.548718	0.403034	-0.407193	0.095921	0.592941	-0.270533	0.817739	0.753074	...	0.798278	-0.137458	0.141267	-0.206010	0.502292	0.219422	0.215153	0	-0.073403	-1.996541
 </code></pre>
 <h2 id="data-imbalance">Data Imbalance</h2>
 <p>We count the number of each class as follows:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">class_count <span style="color:#f92672">=</span> output_var<span style="color:#f92672">.</span>value_counts()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">class_count <span style="color:#f92672">=</span> credit[<span style="color:#e6db74">&#39;Class&#39;</span>]<span style="color:#f92672">.</span>value_counts()
 class_count
 </code></pre></div><pre><code>0    284315
 1       492
 Name: Class, dtype: int64
 </code></pre>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">class_count<span style="color:#f92672">.</span>plot(kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bar&#39;</span>)
-</code></pre></div><pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fa8f033ea30&gt;
-</code></pre>
-<p><img src="https://nchin212.github.io/images/credit_fraud/imbalance_bp.png" alt="png"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">class_count<span style="color:#f92672">.</span>plot(kind <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bar&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;skyblue&#39;</span>)
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/bar1.png" alt="png"></p>
 <p>From the values and plot, there appears to be severe data imbalance. Very few transactions are fraudulent while most of the transactions are safe. This needs to be resolved as predictive models developed using conventional machine learning algorithms could be biased and inaccurate. Such models would have a bias towards classes which have a high number of instances, such as in this case, safe transactions. These models would tend to predict the transactions as safe and treat the fraudulent transactions as noise. Thus, there would be a high probability of misclassification of fraudulent transactions as safe, which is definitely not ideal.</p>
 <p>One of the ways to resolve data imbalance is to resample the dataset. This can be done by undersampling or oversampling. In this case, we will use oversampling as undersampling would result in too little data.</p>
 <h2 id="oversampling">Oversampling</h2>
@@ -253,7 +265,11 @@ Name: Class, dtype: int64
 <li>SMOTE (Synthetic Minority Oversampling Technique)</li>
 </ul>
 <p>Split the data into training and test sets. Note that we only perform oversampling after data splitting and on the training data so that no information will from the test data will be used in model training.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">x_train, x_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(credit, output_var, test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Remove &#39;Class&#39; column</span>
+output_var <span style="color:#f92672">=</span> credit[<span style="color:#e6db74">&#39;Class&#39;</span>]
+credit<span style="color:#f92672">.</span>drop(<span style="color:#e6db74">&#39;Class&#39;</span>, axis<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, inplace<span style="color:#f92672">=</span>True)
+<span style="color:#75715e"># Split the data</span>
+x_train, x_test, y_train, y_test <span style="color:#f92672">=</span> train_test_split(credit, output_var, test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.3</span>, random_state<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
 </code></pre></div><h3 id="randomoversampler">RandomOverSampler</h3>
 <p>RandomOverSampler involves oversampling the minority class by picking samples at random with replacement. We are going to check the number of rows before and after sampling.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Check number of rows before oversampling</span>
@@ -283,21 +299,27 @@ x_train_smote, y_train_smote <span style="color:#f92672">=</span> over_sample<sp
 After OverSampling, counts of label '0': 199008
 </code></pre>
 <h2 id="model-building">Model Building</h2>
-<p>Logistic regression will be used to model the data. Logistic Regression is a classification algorithm that is used to predict the probability of a categorical dependent variable. In logistic regression, the dependent variable is a binary variable that contains data coded as 1 or 0, or in this case, fraudulent or safe.</p>
-<p>The model will first be run on the imbalanced data, followed by  the data after oversampling (RandomOverSampler and SMOTE). The models on the 3 different datasets will then be compared.</p>
+<p>The following models have been chosen for building:</p>
+<ul>
+<li>Logistic Regression</li>
+<li>Random Forest (Bagging)</li>
+<li>Adaboost (Boosting)</li>
+</ul>
+<h3 id="logistic-regression">Logistic Regression</h3>
+<p>Logistic Regression is a classification algorithm that is used to predict the probability of a categorical dependent variable. In logistic regression, the dependent variable is a binary variable that contains data coded as 1 or 0, or in this case, fraudulent or safe.</p>
+<p>The model will first be run on the imbalanced data, followed by  the data after oversampling (RandomOverSampler and SMOTE).</p>
 <h3 id="1-logistic-regression-on-imbalanced-dataset">1) Logistic Regression on imbalanced dataset</h3>
 <p>Fit the training data into logistic regression and use the model to predict on the test data.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">lg <span style="color:#f92672">=</span> LogisticRegression()
 lg<span style="color:#f92672">.</span>fit(x_train, y_train)
 
-y_pred <span style="color:#f92672">=</span> lg<span style="color:#f92672">.</span>predict(x_test)
-</code></pre></div><h3 id="evaluation">Evaluation</h3>
-<p>Plot the confusion matrix. A confusion matrix is a table that is often used to describe the performance of a classification model. It shows the number of true positives, true negatives, false positives and false negatives.</p>
+y_pred_lg <span style="color:#f92672">=</span> lg<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><p>To evaluate the model, we can plot a confusion matrix. A confusion matrix is a table that is often used to describe the performance of a classification model. It shows the number of true positives, true negatives, false positives and false negatives.</p>
 <p><strong>True Positives (TP)</strong> - Actual class is 1 and predicted class is 1 (safe transactions accurately classified as safe)</p>
 <p><strong>True Negatives (TN)</strong> - Actual class is 0 and predicted class is 0 (fraudulent transactions accurately classified as fraudulent)</p>
 <p><strong>False Positives (FP)</strong> - Actual class is 0 but predicted class is 1 (safe transactions wrongly classified as fraudulent)</p>
 <p><strong>False Negatives (FN)</strong> - Actual class is 1 but predicted class is 0 (fraudulent transactions wrongly classified as safe)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred_lg)
 
 <span style="color:#75715e"># Create graphics for confusion matrix</span>
 labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Safe&#39;</span>,<span style="color:#e6db74">&#39;Fraudulent&#39;</span>]
@@ -309,33 +331,28 @@ ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#3
 ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
 ax<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_ticklabels(labels); ax<span style="color:#f92672">.</span>yaxis<span style="color:#f92672">.</span>set_ticklabels(labels)
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/confusion_matrix.png" alt="png"></p>
-<p>There appears to be a large number of transactions classified correctly as safe or fraudulent. However, there are 51 false negatives, i.e. fraudulent transactions that were predicted as safe, which the model needs to improve on.</p>
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/matrix1.png" alt="png"></p>
+<p>There appears to be a large number of transactions classified correctly as safe or fraudulent. However, there are 50 false negatives, i.e. fraudulent transactions that were predicted as safe, which the model needs to improve on.</p>
 <p>Since this is an imbalanced dataset, we print out the classification report, which shows the accuracy, precision, recall, f1 score and support of the model.</p>
 <p><strong>Accuracy</strong> - Ratio of correctly predicted observations to the total observations, i.e. TP+TN/TP+FP+FN+TN</p>
 <p><strong>Precision</strong> - Ratio of correctly predicted positive observations to the total predicted positive observations, i.e. TP/TP+FP</p>
 <p><strong>Recall</strong> - Ratio of correctly predicted positive observations to all the observations in positive class, i.e. TP/TP+FN</p>
 <p><strong>F1 score</strong> - Weighted average of precision and recall, usually more useful than accuracy, especially if you have an uneven class distribution, i.e 2*(Recall * Precision) / (Recall + Precision)</p>
 <p><strong>Support</strong> - Number of actual occurrences of the class in the dataset</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">accuracy <span style="color:#f92672">=</span> accuracy_score(y_test, y_pred)
-precision <span style="color:#f92672">=</span> precision_score(y_test, y_pred)
-recall <span style="color:#f92672">=</span> recall_score(y_test, y_pred)
-f1 <span style="color:#f92672">=</span> f1_score(y_test, y_pred)
-
-<span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_lg, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
 </code></pre></div><pre><code>              precision    recall  f1-score   support
 
-           0    0.99940   0.99986   0.99963     85307
-           1    0.87629   0.62500   0.72961       136
+           0    0.99941   0.99986   0.99964     85307
+           1    0.87755   0.63235   0.73504       136
 
-    accuracy                        0.99926     85443
-   macro avg    0.93785   0.81243   0.86462     85443
-weighted avg    0.99921   0.99926   0.99920     85443
+    accuracy                        0.99927     85443
+   macro avg    0.93848   0.81611   0.86734     85443
+weighted avg    0.99922   0.99927   0.99922     85443
 </code></pre>
 <p>The model has a precision of 0.88, recall of 0.63 and f1 score of 0.73, which shows that the model does relatively well.</p>
 <p>Now, we plot a Receiver Operating Characteristic (ROC) curve. It plots the true positive rate (TPR) versus the false positive rate (FPR) as a function of the model’s threshold for classifying a positive. We then proceed to compute the Area under the curve (AUC), which is a metric to calculate the overall performance of a classification model based on area under the ROC curve.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Get false positive rate and true positive rate</span>
-fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred)
+fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred_lg)
 roc_auc <span style="color:#f92672">=</span> auc(fpr, tpr)
 
 <span style="color:#75715e"># Plot ROC curve</span>
@@ -350,14 +367,13 @@ plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;T
 plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic curve&#39;</span>)
 plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc.png" alt="png"></p>
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc1.png" alt="png"></p>
 <h3 id="2-logistic-regression-on-oversampled-dataset-randomoversampler">2) Logistic Regression on oversampled dataset (RandomOverSampler)</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">lg_ros <span style="color:#f92672">=</span> LogisticRegression()
 lg_ros<span style="color:#f92672">.</span>fit(x_train_ros, y_train_ros)
 
-y_pred <span style="color:#f92672">=</span> lg_ros<span style="color:#f92672">.</span>predict(x_test)
-</code></pre></div><h3 id="evaluation-1">Evaluation</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred)
+y_pred_lg_ros <span style="color:#f92672">=</span> lg_ros<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred_lg_ros)
 
 <span style="color:#75715e"># Create graphics for confusion matrix</span>
 labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Safe&#39;</span>,<span style="color:#e6db74">&#39;Fraudulent&#39;</span>]
@@ -369,26 +385,21 @@ ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#3
 ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
 ax<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_ticklabels(labels); ax<span style="color:#f92672">.</span>yaxis<span style="color:#f92672">.</span>set_ticklabels(labels)
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/confusion_matrix_ros.png" alt="png"></p>
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/matrix2.png" alt="png"></p>
 <p>There appears to be 10 false negatives, which is much lower than the unbalanced dataset. However, there are significantly more false positives.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">accuracy_ros <span style="color:#f92672">=</span> accuracy_score(y_test, y_pred)
-precision_ros <span style="color:#f92672">=</span> precision_score(y_test, y_pred)
-recall_ros <span style="color:#f92672">=</span> recall_score(y_test, y_pred)
-f1_ros <span style="color:#f92672">=</span> f1_score(y_test, y_pred)
-
-<span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_lg_ros, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
 </code></pre></div><pre><code>              precision    recall  f1-score   support
 
-           0    0.99988   0.97414   0.98684     85307
-           1    0.05403   0.92647   0.10211       136
+           0    0.99988   0.97466   0.98711     85307
+           1    0.05507   0.92647   0.10396       136
 
-    accuracy                        0.97406     85443
-   macro avg    0.52696   0.95031   0.54447     85443
-weighted avg    0.99837   0.97406   0.98543     85443
+    accuracy                        0.97458     85443
+   macro avg    0.52747   0.95056   0.54553     85443
+weighted avg    0.99838   0.97458   0.98570     85443
 </code></pre>
 <p>As expected, it has a low precision of 0.05 but a high recall of 0.93.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Get false positive rate and true positive rate</span>
-fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred)
+fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred_lg_ros)
 roc_auc_ros <span style="color:#f92672">=</span> auc(fpr, tpr)
 
 <span style="color:#75715e"># Plot ROC curve</span>
@@ -403,15 +414,13 @@ plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;T
 plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic curve&#39;</span>)
 plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc_ros.png" alt="png"></p>
-<p>It has an AUC score of 0.95, which is higher than that of the imbalanced dataset.</p>
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc2.png" alt="png"></p>
 <h3 id="3-logistic-regression-on-oversampled-dataset-smote">3) Logistic Regression on oversampled dataset (SMOTE)</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">lg_smote <span style="color:#f92672">=</span> LogisticRegression()
 lg_smote<span style="color:#f92672">.</span>fit(x_train_smote, y_train_smote)
 
-y_pred <span style="color:#f92672">=</span> lg_smote<span style="color:#f92672">.</span>predict(x_test)
-</code></pre></div><h3 id="evaluation-2">Evaluation</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred)
+y_pred_lg_smote <span style="color:#f92672">=</span> lg_smote<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">cm <span style="color:#f92672">=</span> confusion_matrix(y_test, y_pred_lg_smote)
 
 <span style="color:#75715e"># Create graphics for confusion matrix</span>
 labels <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Safe&#39;</span>,<span style="color:#e6db74">&#39;Fraudulent&#39;</span>]
@@ -423,25 +432,20 @@ ax<span style="color:#f92672">.</span>set_xlabel(<span style="color:#e6db74">&#3
 ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;Confusion Matrix&#39;</span>);
 ax<span style="color:#f92672">.</span>xaxis<span style="color:#f92672">.</span>set_ticklabels(labels); ax<span style="color:#f92672">.</span>yaxis<span style="color:#f92672">.</span>set_ticklabels(labels)
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/confusion_matrix_smote.png" alt="png"></p>
-<p>It has similar false negatives to the oversampled data using RandomOverSampler but higher false positives.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">accuracy_smote <span style="color:#f92672">=</span> accuracy_score(y_test, y_pred)
-precision_smote <span style="color:#f92672">=</span> precision_score(y_test, y_pred)
-recall_smote <span style="color:#f92672">=</span> recall_score(y_test, y_pred)
-f1_smote <span style="color:#f92672">=</span> f1_score(y_test, y_pred)
-
-<span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/matrix3.png" alt="png"></p>
+<p>It has quite similar false negatives to the oversampled data using RandomOverSampler but higher false positives.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_lg_smote, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
 </code></pre></div><pre><code>              precision    recall  f1-score   support
 
-           0    0.99988   0.97303   0.98627     85307
-           1    0.05192   0.92647   0.09832       136
+           0    0.99989   0.97331   0.98642     85307
+           1    0.05283   0.93382   0.10000       136
 
-    accuracy                        0.97295     85443
-   macro avg    0.52590   0.94975   0.54230     85443
-weighted avg    0.99837   0.97295   0.98486     85443
+    accuracy                        0.97325     85443
+   macro avg    0.52636   0.95357   0.54321     85443
+weighted avg    0.99838   0.97325   0.98501     85443
 </code></pre>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># Get false positive rate and true positive rate</span>
-fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred)
+fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred_lg_smote)
 roc_auc_smote <span style="color:#f92672">=</span> auc(fpr, tpr)
 
 <span style="color:#75715e"># Plot ROC curve</span>
@@ -456,22 +460,145 @@ plt<span style="color:#f92672">.</span>ylabel(<span style="color:#e6db74">&#39;T
 plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Receiver operating characteristic curve&#39;</span>)
 plt<span style="color:#f92672">.</span>legend(loc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;lower right&#34;</span>)
 plt<span style="color:#f92672">.</span>show()
-</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc_smote.png" alt="png"></p>
-<p>It has similar AUC score to the oversampled data using RandomOverSampler.</p>
-<h2 id="results">Results</h2>
-<p>For a better comparison, we create the following dataframe.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">data <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;Accuracy&#39;</span> : [accuracy,accuracy_ros,accuracy_smote],
-        <span style="color:#e6db74">&#39;Precision&#39;</span> : [precision, precision_ros, precision_smote],
-        <span style="color:#e6db74">&#39;Recall&#39;</span> : [recall, recall_ros, recall_smote],
-        <span style="color:#e6db74">&#39;F1&#39;</span> : [f1,f1_ros,f1_smote],
-        <span style="color:#e6db74">&#39;AUC&#39;</span> : [roc_auc,roc_auc_ros,roc_auc_smote]}
-pd<span style="color:#f92672">.</span>DataFrame(data, index <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;Imbalanced&#39;</span>, <span style="color:#e6db74">&#39;RandomOverSampler&#39;</span>, <span style="color:#e6db74">&#39;SMOTE&#39;</span>])
-</code></pre></div><pre><code>                        Accuracy	Precision	Recall	        F1	        AUC
-Imbalanced	        0.999263	0.876289	0.625000	0.729614	0.812430
-RandomOverSampler	0.974065	0.054031	0.926471	0.102107	0.950306
-SMOTE	                0.972953	0.051916	0.926471	0.098322	0.949749
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/auc3.png" alt="png"></p>
+<p>The 3 methods have similar AUC scores.</p>
+<h3 id="random-forest">Random Forest</h3>
+<p>Random forest builds multiple decision trees and merges them together to get a more accurate and stable prediction. It is usually trained with the “bagging” method, where a combination of learning models is used to increase the overall result.</p>
+<h3 id="1-random-forest-on-imbalanced-dataset">1) Random Forest on imbalanced dataset</h3>
+<p>Fit the training data into random forest and use the model to predict on the test data.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rf <span style="color:#f92672">=</span> RandomForestClassifier(n_estimators <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>, random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>)
+rf<span style="color:#f92672">.</span>fit(x_train,y_train)
+y_pred_rf <span style="color:#f92672">=</span>rf<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_rf, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99968   0.99989   0.99979     85307
+           1    0.92373   0.80147   0.85827       136
+
+    accuracy                        0.99958     85443
+   macro avg    0.96171   0.90068   0.92903     85443
+weighted avg    0.99956   0.99958   0.99956     85443
 </code></pre>
-<p>It would appear that the imbalanced dataset performs better overall based on the F1 score. However, if the cost of false positives is not too high, the company may consider using the model fitted with RandomOverSampler, since it predicts less false negatives so less fraudulent transactions will be passed off as safe.</p>
+<h3 id="2-random-forest-on-oversampled-dataset-randomoversampler">2) Random Forest on oversampled dataset (RandomOverSampler)</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rf_ros <span style="color:#f92672">=</span> RandomForestClassifier(n_estimators <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>, random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>)
+rf_ros<span style="color:#f92672">.</span>fit(x_train_ros,y_train_ros)
+y_pred_rf_ros <span style="color:#f92672">=</span>rf_ros<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_rf_ros, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99971   0.99993   0.99982     85307
+           1    0.94872   0.81618   0.87747       136
+
+    accuracy                        0.99964     85443
+   macro avg    0.97421   0.90805   0.93864     85443
+weighted avg    0.99963   0.99964   0.99962     85443
+</code></pre>
+<h3 id="3-random-forest-on-oversampled-dataset-smote">3) Random Forest on oversampled dataset (SMOTE)</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">rf_smote <span style="color:#f92672">=</span> RandomForestClassifier(n_estimators <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>, random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>)
+rf_smote<span style="color:#f92672">.</span>fit(x_train_smote,y_train_smote)
+y_pred_rf_smote <span style="color:#f92672">=</span>rf_smote<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_rf_smote, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99979   0.99973   0.99976     85307
+           1    0.83688   0.86765   0.85199       136
+
+    accuracy                        0.99952     85443
+   macro avg    0.91833   0.93369   0.92587     85443
+weighted avg    0.99953   0.99952   0.99952     85443
+</code></pre>
+<h3 id="adaboost">Adaboost</h3>
+<p>Adaboost (Adaptive Boosting) is a boosting algorithm which converts weak learner to strong learners. A detailed explanation of how this algorithm works can be found <a href="https://www.analyticsvidhya.com/blog/2015/11/quick-introduction-boosting-algorithms-machine-learning">here</a>.</p>
+<h3 id="1-adaboost-on-imbalanced-dataset">1) Adaboost on imbalanced dataset</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ada <span style="color:#f92672">=</span> AdaBoostClassifier(n_estimators <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>, random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>)
+ada<span style="color:#f92672">.</span>fit(x_train,y_train)
+y_pred_ada <span style="color:#f92672">=</span> ada<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_ada, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99967   0.99981   0.99974     85307
+           1    0.87097   0.79412   0.83077       136
+
+    accuracy                        0.99949     85443
+   macro avg    0.93532   0.89697   0.91526     85443
+weighted avg    0.99947   0.99949   0.99947     85443
+</code></pre>
+<h3 id="2-adaboost-on-oversampled-dataset-randomoversampler">2) Adaboost on oversampled dataset (RandomOverSampler)</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ada_ros <span style="color:#f92672">=</span> AdaBoostClassifier(n_estimators <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>, random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>)
+ada_ros<span style="color:#f92672">.</span>fit(x_train_ros,y_train_ros)
+y_pred_ada_ros <span style="color:#f92672">=</span>ada_ros<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_ada_ros, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99988   0.98985   0.99484     85307
+           1    0.12702   0.92647   0.22340       136
+
+    accuracy                        0.98975     85443
+   macro avg    0.56345   0.95816   0.60912     85443
+weighted avg    0.99849   0.98975   0.99361     85443
+</code></pre>
+<h3 id="3-adaboost-on-oversampled-dataset-smote">3) Adaboost on oversampled dataset (SMOTE)</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ada_smote <span style="color:#f92672">=</span> AdaBoostClassifier(n_estimators <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>, random_state <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>)
+ada_smote<span style="color:#f92672">.</span>fit(x_train_smote,y_train_smote)
+y_pred_ada_smote <span style="color:#f92672">=</span> ada_smote<span style="color:#f92672">.</span>predict(x_test)
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">print</span>(classification_report(y_test, y_pred_ada_smote, digits<span style="color:#f92672">=</span><span style="color:#ae81ff">5</span>))
+</code></pre></div><pre><code>              precision    recall  f1-score   support
+
+           0    0.99990   0.98349   0.99163     85307
+           1    0.08333   0.94118   0.15311       136
+
+    accuracy                        0.98343     85443
+   macro avg    0.54162   0.96234   0.57237     85443
+weighted avg    0.99845   0.98343   0.99030     85443
+</code></pre>
+<h2 id="results">Results</h2>
+<p>Create a function to plot the results in a table.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">classification_table</span>(y_test, <span style="color:#f92672">*</span>args):
+    df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(columns<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#39;Accuracy&#39;</span>,<span style="color:#e6db74">&#39;Precision&#39;</span>,<span style="color:#e6db74">&#39;Recall&#39;</span>,<span style="color:#e6db74">&#39;F1-score&#39;</span>])
+    <span style="color:#66d9ef">for</span> y_pred <span style="color:#f92672">in</span> args:
+        accuracy <span style="color:#f92672">=</span> accuracy_score(y_test, y_pred)
+        precision <span style="color:#f92672">=</span> precision_score(y_test, y_pred)
+        recall <span style="color:#f92672">=</span> recall_score(y_test, y_pred)
+        f1 <span style="color:#f92672">=</span> f1_score(y_test, y_pred)
+
+        <span style="color:#75715e"># AUC score</span>
+        fpr, tpr, _ <span style="color:#f92672">=</span> roc_curve(y_test, y_pred)
+        roc_auc <span style="color:#f92672">=</span> auc(fpr, tpr)
+
+        df <span style="color:#f92672">=</span> df<span style="color:#f92672">.</span>append({<span style="color:#e6db74">&#39;Accuracy&#39;</span>: accuracy, <span style="color:#e6db74">&#39;Precision&#39;</span>: precision, <span style="color:#e6db74">&#39;Recall&#39;</span>: recall, <span style="color:#e6db74">&#39;F1-score&#39;</span>: f1, <span style="color:#e6db74">&#39;AUC&#39;</span>: roc_auc}, ignore_index<span style="color:#f92672">=</span>True)
+    <span style="color:#66d9ef">return</span> df
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">combined <span style="color:#f92672">=</span> classification_table(y_test,
+                                y_pred_lg, y_pred_lg_ros, y_pred_lg_smote,
+                                y_pred_rf, y_pred_rf_ros, y_pred_rf_smote,
+                                y_pred_ada, y_pred_ada_ros, y_pred_ada_smote)
+combined<span style="color:#f92672">.</span>index <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;LogReg Imbalanced&#39;</span>, <span style="color:#e6db74">&#39;LogReg RandomOverSampler&#39;</span>,<span style="color:#e6db74">&#39;LogReg SMOTE&#39;</span>,
+                  <span style="color:#e6db74">&#39;RF Imbalanced&#39;</span>, <span style="color:#e6db74">&#39;RF RandomOverSampler&#39;</span>,<span style="color:#e6db74">&#39;RF SMOTE&#39;</span>,
+                  <span style="color:#e6db74">&#39;Ada Imbalanced&#39;</span>, <span style="color:#e6db74">&#39;Ada RandomOverSampler&#39;</span>,<span style="color:#e6db74">&#39;Ada SMOTE&#39;</span>]
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">combined
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/table2.png" alt="png"></p>
+<p>Since this is an unbalanced dataset, accuracy is not the correct metric to use to compare the models as the models will tend to predict the majority class, resulting in high accuracy rates even though the minority class has been classified wrongly. Instead, we should compare the models using their f1-scores.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fig, ax <span style="color:#f92672">=</span> plt<span style="color:#f92672">.</span>subplots(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">8</span>))
+x <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>arange(<span style="color:#ae81ff">3</span>)
+bar_width <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.2</span>
+b1 <span style="color:#f92672">=</span> ax<span style="color:#f92672">.</span>bar(x, combined<span style="color:#f92672">.</span>loc[combined<span style="color:#f92672">.</span>index<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#39;Imbalanced&#39;</span>), <span style="color:#e6db74">&#39;F1-score&#39;</span>],
+            width<span style="color:#f92672">=</span>bar_width, label <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Imbalanced&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;deepskyblue&#39;</span>, edgecolor<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;black&#39;</span>)
+b2 <span style="color:#f92672">=</span> ax<span style="color:#f92672">.</span>bar(x <span style="color:#f92672">+</span> bar_width, combined<span style="color:#f92672">.</span>loc[combined<span style="color:#f92672">.</span>index<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#39;RandomOverSampler&#39;</span>), <span style="color:#e6db74">&#39;F1-score&#39;</span>],
+            width<span style="color:#f92672">=</span>bar_width, label<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39; RandomOverSampler&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;limegreen&#39;</span>, edgecolor<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;black&#39;</span>)
+b3 <span style="color:#f92672">=</span> ax<span style="color:#f92672">.</span>bar(x <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>bar_width, combined<span style="color:#f92672">.</span>loc[combined<span style="color:#f92672">.</span>index<span style="color:#f92672">.</span>str<span style="color:#f92672">.</span>contains(<span style="color:#e6db74">&#39;SMOTE&#39;</span>), <span style="color:#e6db74">&#39;F1-score&#39;</span>],
+            width<span style="color:#f92672">=</span>bar_width, label<span style="color:#f92672">=</span> <span style="color:#e6db74">&#39; SMOTE&#39;</span>, color<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;darkorange&#39;</span>, edgecolor<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;black&#39;</span>)
+
+<span style="color:#75715e"># Add legend</span>
+ax<span style="color:#f92672">.</span>legend()
+
+<span style="color:#75715e"># Fix x-axis labels</span>
+ax<span style="color:#f92672">.</span>set_xticks(x <span style="color:#f92672">+</span> bar_width)
+ax<span style="color:#f92672">.</span>set_xticklabels([<span style="color:#e6db74">&#39;Logistic Regression&#39;</span>,<span style="color:#e6db74">&#39;Random Forest&#39;</span>, <span style="color:#e6db74">&#39;AdaBoost&#39;</span>])
+
+<span style="color:#75715e"># Add axis and chart labels.</span>
+ax<span style="color:#f92672">.</span>set_ylabel(<span style="color:#e6db74">&#39;F1-score&#39;</span>)
+ax<span style="color:#f92672">.</span>set_title(<span style="color:#e6db74">&#39;F1-score by Model and Oversampling Technique&#39;</span>, pad<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>)
+</code></pre></div><p><img src="https://nchin212.github.io/images/credit_fraud/bar2.png" alt="png"></p>
+<p>Both logistic regression and adaBoost appear to perform very well on the imbalanced dataset but not on the oversampled datasets. Random forest performs very well overall and the best model performance is random forest with RandomOverSampler with a f1-score of 87.7%. However, one may consider comparing the models using recall as companies would want the model to be sensitive to fraudulent transactions and have a low number of false negatives. In that case, adaboost with SMOTE would be the best model with a recall of 94.1%.</p>
 <p><a href="https://github.com/nchin212/Credit_Card_Fraud_Detection">Link to Github repository</a></p>
 <ul class="pa0">
   
@@ -489,6 +616,14 @@ SMOTE	                0.972953	0.051916	0.926471	0.098322	0.949749
   
    <li class="list">
      <a href="https://nchin212.github.io/tags/Oversampling" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Oversampling</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/RandomForest" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">RandomForest</a>
+   </li>
+  
+   <li class="list">
+     <a href="https://nchin212.github.io/tags/Adaboost" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Adaboost</a>
    </li>
   
 </ul>
@@ -523,9 +658,12 @@ SMOTE	                0.972953	0.051916	0.926471	0.098322	0.949749
     <p class="f5 b mb3">What&#39;s in this post</p>
       <nav id="TableOfContents">
   <ul>
+    <li><a href="#tools-used">Tools Used</a></li>
+    <li><a href="#synopsis">Synopsis</a></li>
     <li><a href="#data">Data</a></li>
     <li><a href="#loading-in-the-data">Loading in the Data</a></li>
-    <li><a href="#data-preparation">Data Preparation</a></li>
+    <li><a href="#exploratory-data-analysis">Exploratory Data Analysis</a></li>
+    <li><a href="#data-cleaning">Data Cleaning</a></li>
     <li><a href="#data-imbalance">Data Imbalance</a></li>
     <li><a href="#oversampling">Oversampling</a>
       <ul>
@@ -535,12 +673,18 @@ SMOTE	                0.972953	0.051916	0.926471	0.098322	0.949749
     </li>
     <li><a href="#model-building">Model Building</a>
       <ul>
+        <li><a href="#logistic-regression">Logistic Regression</a></li>
         <li><a href="#1-logistic-regression-on-imbalanced-dataset">1) Logistic Regression on imbalanced dataset</a></li>
-        <li><a href="#evaluation">Evaluation</a></li>
         <li><a href="#2-logistic-regression-on-oversampled-dataset-randomoversampler">2) Logistic Regression on oversampled dataset (RandomOverSampler)</a></li>
-        <li><a href="#evaluation-1">Evaluation</a></li>
         <li><a href="#3-logistic-regression-on-oversampled-dataset-smote">3) Logistic Regression on oversampled dataset (SMOTE)</a></li>
-        <li><a href="#evaluation-2">Evaluation</a></li>
+        <li><a href="#random-forest">Random Forest</a></li>
+        <li><a href="#1-random-forest-on-imbalanced-dataset">1) Random Forest on imbalanced dataset</a></li>
+        <li><a href="#2-random-forest-on-oversampled-dataset-randomoversampler">2) Random Forest on oversampled dataset (RandomOverSampler)</a></li>
+        <li><a href="#3-random-forest-on-oversampled-dataset-smote">3) Random Forest on oversampled dataset (SMOTE)</a></li>
+        <li><a href="#adaboost">Adaboost</a></li>
+        <li><a href="#1-adaboost-on-imbalanced-dataset">1) Adaboost on imbalanced dataset</a></li>
+        <li><a href="#2-adaboost-on-oversampled-dataset-randomoversampler">2) Adaboost on oversampled dataset (RandomOverSampler)</a></li>
+        <li><a href="#3-adaboost-on-oversampled-dataset-smote">3) Adaboost on oversampled dataset (SMOTE)</a></li>
       </ul>
     </li>
     <li><a href="#results">Results</a></li>

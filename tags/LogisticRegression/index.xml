@@ -13,7 +13,7 @@
       <pubDate>Tue, 05 Jan 2021 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/sentiment_analysis/</guid>
-      <description>Sentiment Analysis is a natural language processing technique used to determine whether the data is positive, negative or neutral. It helps companies monitor brand and product reputation and gauge customer sentiments on their products from customer reviews. In this project, we will be examining Amazon reviews for video games and using naive bayes, logistic regression and support vector machines for sentiment analysis. We will also be comparing between 2 tokenization techniques, CountVectorizer and TfidfVectorizer in scikit-learn.</description>
+      <description>In this project, we analyzed Amazon video game reviews by classifying them as positive or negative. We tokenized the reviews using 2 different vectorizers, CountVectorizer and TfidfVectorizer. We then applied naive bayes, logistic regression and support vector machine (SVM) on the 2 different vectorizers. Naive Bayes with CountVectorizer had the highest f1-score of around 88%.</description>
     </item>
     
     <item>
@@ -22,7 +22,7 @@
       <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>https://nchin212.github.io/post/credit_fraud/</guid>
-      <description>Credit card companies handle numerous credit card transactions each day and there could be some cases of fraudulent transactions, where customers are charged for items they did not purchase. As such, it is important for companies to detect these fraudulent transactions to improve customer security and build up customer confidence in the company. In this project, we will explore some methods to resolve data imbalance and use logistic regression to classify the transactions as safe or fraudulent.</description>
+      <description>In this project, we analyzed credit card transactions made by European cardholders by classifying them as safe or fraudulent. We tried 2 different oversampling techniques, RandomOverSampler and Synthetic Minority Oversampling Technique (SMOTE). We also implemented logistic regression, random forest and adaboost on the imbalanced data and oversampled data. Random Forest with RandomOverSampler achieved the highest f1 score of around 87%.</description>
     </item>
     
   </channel>
